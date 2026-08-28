@@ -1,0 +1,392 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   HIRESENSE GLOBAL DESIGN SYSTEM
+   ========================================================= */
+
+:root {
+  color-scheme: dark;
+
+  /* Background */
+  --bg: #05060b;
+  --bg-soft: #070812;
+  --surface: #0b0d18;
+  --surface-soft: rgba(17, 20, 35, 0.62);
+  --surface-strong: rgba(20, 23, 40, 0.82);
+
+  /* Borders */
+  --border: rgba(255, 255, 255, 0.07);
+  --border-hover: rgba(167, 139, 250, 0.24);
+
+  /* Text */
+  --text: #f5f7ff;
+  --text-soft: #c4c8d8;
+  --muted: #777d94;
+
+  /* Brand */
+  --primary: #9b7cff;
+  --primary-light: #b9a4ff;
+  --primary-soft: rgba(155, 124, 255, 0.11);
+
+  --cyan: #67e8f9;
+  --cyan-soft: rgba(103, 232, 249, 0.1);
+
+  /* Semantic */
+  --success: #4ade80;
+  --warning: #facc15;
+  --danger: #fb7185;
+
+  /* Shape */
+  --radius: 16px;
+
+  /* Shadows */
+  --shadow:
+    0 20px 70px rgba(0, 0, 0, 0.35);
+
+  --purple-glow:
+    0 0 50px rgba(139, 92, 246, 0.12);
+
+  --cyan-glow:
+    0 0 50px rgba(34, 211, 238, 0.08);
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  width: 100%;
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  width: 100%;
+  min-width: 320px;
+  min-height: 100vh;
+
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      rgba(124, 92, 246, 0.10),
+      transparent 38%
+    ),
+    #05060b;
+
+  color: var(--text);
+
+  font-family:
+    "DM Sans",
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  overflow-x: hidden;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family:
+    "DM Sans",
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+
+/* =========================================================
+   ROOT
+   ========================================================= */
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #05060b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(155, 124, 255, 0.28);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(155, 124, 255, 0.48);
+}
+
+
+/* Firefox */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color:
+    rgba(155, 124, 255, 0.28)
+    #05060b;
+}
+
+
+/* =========================================================
+   GLASS SYSTEM
+   ========================================================= */
+
+.glass-card {
+  background:
+    rgba(17, 20, 35, 0.62);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 20px 70px
+    rgba(0, 0, 0, 0.35);
+
+  border-radius: 16px;
+}
+
+.glass-card:hover {
+  border-color:
+    rgba(167, 139, 250, 0.18);
+}
+
+
+/* =========================================================
+   BRAND GLOW
+   ========================================================= */
+
+.red-glow {
+  box-shadow:
+    0 0 30px
+    rgba(139, 92, 246, 0.12);
+}
+
+.purple-glow {
+  box-shadow:
+    0 0 30px
+    rgba(139, 92, 246, 0.16);
+}
+
+.cyan-glow {
+  box-shadow:
+    0 0 30px
+    rgba(34, 211, 238, 0.10);
+}
+
+
+/* =========================================================
+   GRID BACKGROUND
+   ========================================================= */
+
+.grid-bg {
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    );
+
+  background-size: 48px 48px;
+}
+
+
+/* =========================================================
+   TEXT UTILITIES
+   ========================================================= */
+
+.gradient-text {
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff 0%,
+      #c4b5fd 45%,
+      #67e8f9 100%
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+
+/* =========================================================
+   SELECTION
+   ========================================================= */
+
+::selection {
+  background:
+    rgba(155, 124, 255, 0.28);
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   FOCUS
+   ========================================================= */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline:
+    2px solid
+    rgba(155, 124, 255, 0.65);
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   FORM ELEMENTS
+   ========================================================= */
+
+input,
+textarea,
+select {
+  color: var(--text);
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.08);
+
+  outline: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color:
+    rgba(148, 163, 184, 0.55);
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color:
+    rgba(155, 124, 255, 0.35);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(155, 124, 255, 0.07);
+}
+
+
+/* =========================================================
+   DISABLED
+   ========================================================= */
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+
+/* =========================================================
+   RED COMPATIBILITY
+   ========================================================= */
+
+/*
+   Some older components still use classes such as
+   .red-glow. They are intentionally mapped to the
+   current purple/cyan visual language so old components
+   don't suddenly turn the application red again.
+*/
+
+.red-glow {
+  box-shadow:
+    0 0 35px
+    rgba(139, 92, 246, 0.13);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .glass-card {
+    border-radius: 14px;
+  }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
