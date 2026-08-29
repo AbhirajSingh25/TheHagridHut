@@ -546,3 +546,194 @@ export async function getCandidateIntelligence() {
     "/api/candidate/intelligence"
   );
 }
+
+/* ====================================
+   NOTES
+==================================== */
+
+export async function getNotes() {
+  return request(
+    "/api/notes/"
+  );
+}
+
+export async function createNote(note: {
+  title: string;
+  content?: string;
+  category?: string;
+  color?: string;
+  is_pinned?: boolean;
+}) {
+  return request(
+    "/api/notes/",
+    {
+      method: "POST",
+      body: JSON.stringify(note),
+    }
+  );
+}
+
+export async function updateNote(
+  noteId: number,
+  updates: {
+    title?: string;
+    content?: string;
+    category?: string;
+    color?: string;
+    is_pinned?: boolean;
+  }
+) {
+  return request(
+    `/api/notes/${noteId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }
+  );
+}
+
+export async function deleteNote(noteId: number) {
+  return request(
+    `/api/notes/${noteId}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
+
+/* ====================================
+   NOTIFICATIONS
+==================================== */
+
+export async function getNotifications(unreadOnly: boolean = false) {
+  return request(
+    `/api/notifications/?unread_only=${unreadOnly}`
+  );
+}
+
+export async function getUnreadNotificationCount() {
+  return request(
+    "/api/notifications/unread-count"
+  );
+}
+
+export async function markNotificationRead(notificationId: number) {
+  return request(
+    `/api/notifications/${notificationId}/read`,
+    {
+      method: "PUT",
+    }
+  );
+}
+
+export async function markAllNotificationsRead() {
+  return request(
+    "/api/notifications/read-all",
+    {
+      method: "PUT",
+    }
+  );
+}
+
+export async function deleteNotification(notificationId: number) {
+  return request(
+    `/api/notifications/${notificationId}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
+
+export async function deleteAllNotifications() {
+  return request(
+    "/api/notifications/",
+    {
+      method: "DELETE",
+    }
+  );
+}
+
+/* ====================================
+   SCHEDULER
+==================================== */
+
+export async function getSchedules(
+  status?: string,
+  upcomingOnly: boolean = false
+) {
+  const params = new URLSearchParams();
+  if (status) params.set("status", status);
+  if (upcomingOnly) params.set("upcoming_only", "true");
+  const query = params.toString();
+  return request(
+    `/api/scheduler/${query ? `?${query}` : ""}`
+  );
+}
+
+export async function getUpcomingSchedules(limit: number = 10) {
+  return request(
+    `/api/scheduler/upcoming?limit=${limit}`
+  );
+}
+
+export async function createSchedule(schedule: {
+  title: string;
+  role: string;
+  level?: string;
+  company?: string;
+  interview_type?: string;
+  scheduled_at: string;
+  duration_minutes?: number;
+  reminder_minutes?: number;
+  notes?: string;
+}) {
+  return request(
+    "/api/scheduler/",
+    {
+      method: "POST",
+      body: JSON.stringify(schedule),
+    }
+  );
+}
+
+export async function updateSchedule(
+  scheduleId: number,
+  updates: Partial<{
+    title: string;
+    role: string;
+    level: string;
+    company: string;
+    interview_type: string;
+    scheduled_at: string;
+    duration_minutes: number;
+    reminder_minutes: number;
+    notes: string;
+    status: string;
+  }>
+) {
+  return request(
+    `/api/scheduler/${scheduleId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }
+  );
+}
+
+export async function cancelSchedule(scheduleId: number) {
+  return request(
+    `/api/scheduler/${scheduleId}/cancel`,
+    {
+      method: "POST",
+    }
+  );
+}
+
+export async function deleteSchedule(scheduleId: number) {
+  return request(
+    `/api/scheduler/${scheduleId}`,
+    {
+      method: "DELETE",
+    }
+  );
+}
