@@ -44,9 +44,15 @@ import {
   Award,
   UsersRound,
   ShieldCheck,
-  BriefcaseBusiness
+  BriefcaseBusiness,
+  Smartphone
 } from "lucide-react";
 
+import HagridsLogo from "./shared/HagridsLogo";
+import ExperienceToggle from "./shared/ExperienceToggle";
+import AmbientSoundController from "./shared/AmbientSoundController";
+import InstallAppModal from "./shared/InstallAppModal";
+import { useTheme } from "../context/ThemeContext";
 
 type Props = {
   children: ReactNode;
@@ -123,6 +129,9 @@ function MainLayout({
     user,
     setUser,
   ] = useState<any>({});
+
+  const { experience, setExperience } = useTheme();
+  const [installModalOpen, setInstallModalOpen] = useState(false);
 
 
   /* =========================================================
@@ -1036,90 +1045,10 @@ function MainLayout({
             `}
           >
 
-            <Link
+            <HagridsLogo
+              variant={collapsed ? "minimal" : "full"}
               to="/dashboard"
-              className="
-                group
-                flex
-                items-center
-                gap-3
-              "
-            >
-
-              <div
-                className="
-                  relative
-                  flex
-                  h-9
-                  w-9
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-xl
-                  border
-                  border-violet-400/20
-                  bg-violet-500/[0.09]
-                "
-              >
-
-                <Brain
-                  size={18}
-                  className="
-                    relative
-                    z-10
-                    text-violet-300
-                  "
-                />
-
-                <span
-                  className="
-                    absolute
-                    inset-0
-                    rounded-xl
-                    bg-violet-400/10
-                    blur-md
-                    opacity-0
-                    transition
-                    group-hover:opacity-100
-                  "
-                />
-
-              </div>
-
-
-              {!collapsed && (
-
-                <div>
-
-                  <p
-                    className="
-                      font-['Space_Grotesk']
-                      text-[15px]
-                      font-bold
-                      tracking-tight
-                      text-[var(--text)]
-                    "
-                  >
-                    HireSense
-                  </p>
-
-                  <p
-                    className="
-                      font-mono
-                      text-[8px]
-                      uppercase
-                      tracking-[0.2em]
-                      text-[var(--muted)]
-                    "
-                  >
-                    AI CAREER OS
-                  </p>
-
-                </div>
-
-              )}
-
-            </Link>
+            />
 
 
             <button
@@ -1818,7 +1747,6 @@ function MainLayout({
 
 
             <div className="hidden sm:block">
-
               <p
                 className="
                   font-mono
@@ -1828,9 +1756,8 @@ function MainLayout({
                   text-[var(--text-faint)]
                 "
               >
-                HireSense / Workspace
+                Hagrid's Hut / {experience === "cozy" ? "Study Desk" : "Advanced Telemetry"}
               </p>
-
 
               <p
                 className="
@@ -1840,9 +1767,8 @@ function MainLayout({
                   text-[var(--text-soft)]
                 "
               >
-                AI Career Intelligence
+                {experience === "cozy" ? "by The Sorted Club" : "Professional Career OS"}
               </p>
-
             </div>
 
           </div>
@@ -1857,6 +1783,8 @@ function MainLayout({
               gap-2
             "
           >
+            <ExperienceToggle variant="compact" className="hidden sm:inline-flex" />
+            <AmbientSoundController />
 
             <button
               onClick={() =>
@@ -2499,8 +2427,13 @@ function MainLayout({
             relative
             z-10
             min-h-screen
-            px-6
-            py-8
+            px-4
+            sm:px-6
+            lg:px-8
+            py-6
+            sm:py-8
+            pb-24
+            lg:pb-8
           "
         >
 
@@ -2576,7 +2509,7 @@ function MainLayout({
                     event.target.value
                   )
                 }
-                placeholder="Search HireSense..."
+                placeholder="Search Hagrid's Hut..."
                 className="
                   h-14
                   flex-1
@@ -2789,7 +2722,7 @@ function MainLayout({
                   text-[var(--muted)]
                 "
               >
-                HireSense command center
+                Hagrid's Hut command center · A product of The Sorted Club
               </span>
 
 
@@ -2816,6 +2749,87 @@ function MainLayout({
         </div>
 
       )}
+
+      {/* =====================================================
+          MOBILE BOTTOM NAVIGATION (Phones & Tablets)
+          Ergonomic bottom touch targets + iOS safe area insets
+          ===================================================== */}
+      <nav
+        aria-label="Mobile Navigation Bar"
+        className="
+          lg:hidden
+          fixed
+          bottom-0
+          left-0
+          right-0
+          z-40
+          bg-[var(--bg-elevated-glass)]
+          border-t
+          border-[var(--border)]
+          backdrop-blur-2xl
+          px-3
+          py-2
+          flex
+          items-center
+          justify-around
+          shadow-[0_-10px_30px_rgba(0,0,0,0.45)]
+        "
+        style={{ paddingBottom: "max(var(--safe-bottom), 8px)" }}
+      >
+        <Link
+          to="/dashboard"
+          className={`flex flex-col items-center gap-1 text-[10px] font-medium transition-colors ${
+            isActive("/dashboard") ? "text-[#E8AD62] font-semibold" : "text-[var(--muted)] hover:text-[var(--text)]"
+          }`}
+        >
+          <LayoutDashboard size={18} />
+          <span>Desk</span>
+        </Link>
+
+        <Link
+          to="/practice"
+          className={`flex flex-col items-center gap-1 text-[10px] font-medium transition-colors ${
+            isActive("/practice") ? "text-[#E8AD62] font-semibold" : "text-[var(--muted)] hover:text-[var(--text)]"
+          }`}
+        >
+          <Mic size={18} />
+          <span>Practice</span>
+        </Link>
+
+        <Link
+          to="/resume"
+          className={`flex flex-col items-center gap-1 text-[10px] font-medium transition-colors ${
+            isActive("/resume") ? "text-[#E8AD62] font-semibold" : "text-[var(--muted)] hover:text-[var(--text)]"
+          }`}
+        >
+          <FileText size={18} />
+          <span>Resume</span>
+        </Link>
+
+        <Link
+          to="/reports"
+          className={`flex flex-col items-center gap-1 text-[10px] font-medium transition-colors ${
+            isActive("/reports") ? "text-[#E8AD62] font-semibold" : "text-[var(--muted)] hover:text-[var(--text)]"
+          }`}
+        >
+          <BarChart3 size={18} />
+          <span>Reports</span>
+        </Link>
+
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="flex flex-col items-center gap-1 text-[10px] font-medium text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+        >
+          <Menu size={18} />
+          <span>More</span>
+        </button>
+      </nav>
+
+      {/* Install App Modal */}
+      <InstallAppModal
+        isOpen={installModalOpen}
+        onClose={() => setInstallModalOpen(false)}
+      />
 
     </div>
 

@@ -114,7 +114,7 @@ function Profile() {
       id: 1,
       title: "Profile created",
       description:
-        "Your HireSense AI career profile is active and ready to collect intelligence.",
+        "Your Hagrid's Hut career profile is active and ready to collect intelligence.",
       time: "Recently",
       icon: (
         <User size={16} />
@@ -584,7 +584,7 @@ function Profile() {
                 Manage your professional
                 identity, career preferences
                 and intelligence profile used
-                across HireSense AI.
+                across Hagrid's Hut.
               </p>
             </div>
 

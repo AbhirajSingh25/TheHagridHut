@@ -588,7 +588,7 @@ function Certificate() {
                   text-slate-500
                 "
               >
-                Complete a HireSense AI interview and generate a final
+                Complete a Hagrid's Hut interview and generate a final
                 performance report. Once the report is available, this
                 page will create your verified interview credential.
 
@@ -826,7 +826,7 @@ function Certificate() {
                 "
               >
                 This certificate is generated from your latest completed
-                HireSense AI interview report and reflects the role,
+                Hagrid's Hut interview report and reflects the role,
                 interview level, and overall performance recorded by
                 the system.
 
@@ -1263,7 +1263,7 @@ function Certificate() {
                   </span>
                   {" "}
                   level and demonstrated verified performance through
-                  the HireSense AI interview intelligence system.
+                  the Hagrid's Hut interview intelligence system.
 
                 </p>
 
@@ -1467,7 +1467,7 @@ function Certificate() {
                         text-slate-300
                       "
                     >
-                      HireSense AI Intelligence Engine
+                      Hagrid's Hut · The Sorted Club
 
                     </p>
 
@@ -1869,7 +1869,7 @@ function Certificate() {
                   "
                 >
                   Download the certificate as a record of your verified
-                  HireSense AI interview performance.
+                  Hagrid's Hut interview performance.
 
                 </p>
 

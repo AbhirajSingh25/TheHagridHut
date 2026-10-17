@@ -273,7 +273,7 @@ function HiringProbability() {
                   text-slate-400
                 "
               >
-                HireSense combines interview performance, resume signals,
+                Hagrid's Hut combines interview performance, resume signals,
                 communication and skill alignment to estimate your current
                 hiring readiness.
               </p>

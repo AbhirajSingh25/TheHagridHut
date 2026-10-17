@@ -221,7 +221,7 @@ const sidebarItems: {
 ];
 
 const Settings: React.FC = () => {
-  const { theme: activeTheme, setTheme: applyTheme } = useTheme();
+  const { theme: activeTheme, setTheme: applyTheme, experience, setExperience } = useTheme();
 
   const [activeSection, setActiveSection] =
     useState<SettingsSection>("appearance");
@@ -517,17 +517,17 @@ const Settings: React.FC = () => {
   const getSectionDescription = () => {
     switch (activeSection) {
       case "appearance":
-        return "Customize the way your HireSense workspace looks and feels.";
+        return "Customize the atmosphere, theme, and density of your Hagrid's Hut workspace.";
       case "notifications":
-        return "Control when and how HireSense keeps you informed.";
+        return "Control when and how Hagrid's Hut keeps you informed.";
       case "ai":
-        return "Personalize how HireSense AI supports your interview preparation.";
+        return "Personalize how Hagrid's Hut Groq AI supports your interview preparation.";
       case "privacy":
-        return "Manage your visibility, data sharing, and personalization.";
+        return "Manage your visibility, data sharing, and study personalization.";
       case "security":
         return "Protect your account and manage important security controls.";
       case "data":
-        return "Download, manage, or remove data associated with your account.";
+        return "Download, manage, or export data associated with your study sessions.";
       default:
         return "";
     }
@@ -535,6 +535,81 @@ const Settings: React.FC = () => {
 
   const renderAppearance = () => (
     <>
+      <SettingRow
+        icon={<Sparkles size={18} />}
+        title="Product Experience Mode"
+        description="Switch between The Cozy Experience (warm ambient study) and Advanced Mode (modernized HireSense telemetry)."
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            flexWrap: "wrap",
+            justifyContent: "flex-end",
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setExperience("cozy")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "7px",
+              padding: "9px 14px",
+              borderRadius: "10px",
+              border: "1px solid",
+              borderColor:
+                experience === "cozy"
+                  ? "rgba(232,173,98,0.7)"
+                  : "rgba(148,163,184,0.15)",
+              background:
+                experience === "cozy"
+                  ? "rgba(232,173,98,0.18)"
+                  : "rgba(255,255,255,0.03)",
+              color:
+                experience === "cozy"
+                  ? "#F6CD8B"
+                  : "#94a3b8",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+          >
+            🕯️ Cozy Experience (Default)
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setExperience("advanced")}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "7px",
+              padding: "9px 14px",
+              borderRadius: "10px",
+              border: "1px solid",
+              borderColor:
+                experience === "advanced"
+                  ? "rgba(16,185,129,0.7)"
+                  : "rgba(148,163,184,0.15)",
+              background:
+                experience === "advanced"
+                  ? "rgba(16,185,129,0.18)"
+                  : "rgba(255,255,255,0.03)",
+              color:
+                experience === "advanced"
+                  ? "#34D399"
+                  : "#94a3b8",
+              cursor: "pointer",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+          >
+            ⚡ Advanced Mode
+          </button>
+        </div>
+      </SettingRow>
+
       <SettingRow
         icon={<Moon size={18} />}
         title="Theme"
@@ -781,7 +856,7 @@ const Settings: React.FC = () => {
       <SettingRow
         icon={<Brain size={18} />}
         title="AI follow-up questions"
-        description="Allow HireSense AI to ask dynamic follow-up questions during interviews."
+        description="Allow Hagrid's Hut AI to ask dynamic follow-up questions during interviews."
       >
         <Toggle
           enabled={aiPreferences.followUps}

@@ -2848,7 +2848,7 @@ function Leaderboard() {
                     text-slate-200
                   "
                 >
-                  How HireSense ranks candidates
+                  How Hagrid's Hut ranks candidates
 
                 </p>
 

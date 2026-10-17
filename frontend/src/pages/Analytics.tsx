@@ -1918,7 +1918,7 @@ function Analytics() {
                   >
 
                     The more interview sessions you
-                    complete, the better HireSense
+                    complete, the better Hagrid's Hut
                     can identify your trends,
                     improvement areas and career
                     readiness.

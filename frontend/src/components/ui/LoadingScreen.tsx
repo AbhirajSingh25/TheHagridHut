@@ -58,9 +58,9 @@ function LoadingScreen() {
             tracking-tight
           "
         >
-          HireSense
-          <span className="text-[#ff0040]">
-            AI
+          Hagrid's Hut
+          <span className="block text-xs font-normal text-[#E8AD62] tracking-wider uppercase mt-1">
+            by The Sorted Club
           </span>
         </motion.h1>
 

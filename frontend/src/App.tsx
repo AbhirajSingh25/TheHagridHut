@@ -41,6 +41,9 @@ import Login
 import Signup
   from "./pages/Signup";
 
+import Home
+  from "./pages/Home";
+
 
 /* =========================================================
    CORE WORKSPACE
@@ -246,12 +249,7 @@ function App() {
         <Route
           path="/"
           element={
-
-            <Navigate
-              to="/dashboard"
-              replace
-            />
-
+            <Home />
           }
         />
 
@@ -369,13 +367,18 @@ function App() {
         <Route
           path="/resume-analyzer"
           element={
-
             <ProtectedRoute>
-
               <ResumeAnalyzer />
-
             </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/resume"
+          element={
+            <ProtectedRoute>
+              <ResumeAnalyzer />
+            </ProtectedRoute>
           }
         />
 
@@ -475,13 +478,18 @@ function App() {
         <Route
           path="/speech-intelligence"
           element={
-
             <ProtectedRoute>
-
               <SpeechIntelligence />
-
             </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/speech"
+          element={
+            <ProtectedRoute>
+              <SpeechIntelligence />
+            </ProtectedRoute>
           }
         />
 

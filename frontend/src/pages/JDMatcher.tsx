@@ -540,7 +540,7 @@ function JDMatcher() {
                   )
               }
               placeholder="
-Paste the complete job description here. HireSense will compare
+Paste the complete job description here. Hagrid's Hut will compare
 skills, experience signals and role requirements against your
 candidate intelligence profile.
               "

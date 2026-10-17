@@ -63,22 +63,15 @@ function LoadingScreen() {
         <h1
           className="
             text-3xl
+            font-display
             font-bold
             tracking-tight
-            text-white
+            text-[#FFF7E9]
           "
         >
-          HireSense
-          <span
-            className="
-              bg-gradient-to-r
-              from-violet-400
-              to-cyan-300
-              bg-clip-text
-              text-transparent
-            "
-          >
-            AI
+          Hagrid's Hut
+          <span className="block text-xs font-normal text-[#E8AD62] tracking-wider uppercase mt-1">
+            a product of The Sorted Club
           </span>
         </h1>
 

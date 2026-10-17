@@ -33,6 +33,7 @@ import AIButton from "../components/ui/AIButton";
 import PageHeader from "../components/ui/PageHeader";
 import MetricCard from "../components/ui/MetricCard";
 import SectionTitle from "../components/ui/SectionTitle";
+import { useTheme } from "../context/ThemeContext";
 
 import {
   getDashboardStats,
@@ -58,7 +59,7 @@ interface DashboardStats {
 function Dashboard() {
 
   const navigate = useNavigate();
-
+  const { experience } = useTheme();
 
   const [
     stats,
@@ -375,14 +376,22 @@ function Dashboard() {
         >
 
           <PageHeader
-            title="AI Career Dashboard"
-            description="Your interview intelligence, performance signals, and career preparation progress in one place."
+            title={
+              experience === "cozy"
+                ? "Hagrid's Study Desk"
+                : "Advanced Telemetry Dashboard"
+            }
+            description={
+              experience === "cozy"
+                ? "Welcome back to your study. Settle in, review your goals, and practise with calm, steady confidence."
+                : "Real-time interview telemetry, candidate signals, and performance progression."
+            }
           />
 
 
           <AIButton
             onClick={() =>
-              navigate("/live-interview")
+              navigate("/practice")
             }
           >
 
@@ -399,7 +408,7 @@ function Dashboard() {
                 fill="currentColor"
               />
 
-              Start AI Interview
+              {experience === "cozy" ? "Enter Practice Room" : "Launch AI Interview"}
 
               <ArrowUpRight
                 size={15}
@@ -1181,7 +1190,7 @@ function Dashboard() {
               text-[var(--muted)]
             "
           >
-            HireSense AI Engine Online
+            Hagrid's Hut Engine Online · The Sorted Club
           </span>
 
         </div>

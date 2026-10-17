@@ -36,7 +36,10 @@ type JDResult = {
   keywords_to_add?: string[];
 };
 
+import { useTheme } from "../context/ThemeContext";
+
 function ResumeAnalyzer() {
+  const { experience } = useTheme();
   const [file, setFile] = useState<File | null>(null);
 
   const [jobDescription, setJobDescription] =
@@ -283,21 +286,21 @@ function ResumeAnalyzer() {
         {/* PAGE HEADER */}
         <section className="mb-8 pt-2">
           <div className="mb-2 flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.7)]" />
+            <span className={`h-2 w-2 rounded-full ${experience === "cozy" ? "bg-[#E8AD62] shadow-[0_0_10px_rgba(232,173,98,0.7)]" : "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.7)]"}`} />
 
-            <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-emerald-400/80">
-              RESUME INTELLIGENCE
+            <span className={`text-[10px] font-semibold uppercase tracking-[0.22em] ${experience === "cozy" ? "text-[#E8AD62]" : "text-emerald-400/80"}`}>
+              {experience === "cozy" ? "Hagrid's Hut Workshop" : "Resume Intelligence Telemetry"}
             </span>
           </div>
 
-          <h1 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-            Resume Analyzer
+          <h1 className={`text-3xl sm:text-4xl font-bold tracking-tight text-white ${experience === "cozy" ? "font-display text-[#FFF7E9]" : ""}`}>
+            {experience === "cozy" ? "AI Resume Workshop" : "Resume Analyzer & ATS Engine"}
           </h1>
 
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">
-            Analyze your resume for ATS compatibility,
-            skills, recruiter readiness, and role
-            alignment.
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400 font-study">
+            {experience === "cozy"
+              ? "Polish and score your resume in your study. Receive genuine ATS keyword scoring, structural critique, and tailored job description alignment."
+              : "Analyze your resume for ATS compatibility, keyword density, recruiter readiness, and target job description fit."}
           </p>
         </section>
 

@@ -57,7 +57,7 @@ const ACHIEVEMENT_CATALOG: AchievementDefinition[] = [
     id: "first-interview",
     title: "First Interview",
     description:
-      "Complete your first HireSense AI interview session and receive a full performance evaluation.",
+      "Complete your first Hagrid's Hut interview session and receive a full performance evaluation.",
     progressText:
       "Complete 1 interview",
     category:
@@ -99,7 +99,7 @@ const ACHIEVEMENT_CATALOG: AchievementDefinition[] = [
     id: "interview-master",
     title: "Interview Master",
     description:
-      "Achieve consistently high performance and show mastery across the HireSense interview intelligence system.",
+      "Achieve consistently high performance and show mastery across the Hagrid's Hut interview intelligence system.",
     progressText:
       "Reach the mastery benchmark",
     category:
@@ -113,7 +113,7 @@ const ACHIEVEMENT_CATALOG: AchievementDefinition[] = [
     id: "high-potential",
     title: "High Potential",
     description:
-      "Earn a high-confidence recommendation from the HireSense candidate intelligence engine.",
+      "Earn a high-confidence recommendation from the Hagrid's Hut candidate intelligence engine.",
     progressText:
       "Receive an AI recommendation",
     category:
@@ -155,7 +155,7 @@ const ACHIEVEMENT_CATALOG: AchievementDefinition[] = [
     id: "career-ready",
     title: "Career Ready",
     description:
-      "Complete the core HireSense preparation journey and demonstrate readiness for professional interviews.",
+      "Complete the core Hagrid's Hut preparation journey and demonstrate readiness for professional interviews.",
     progressText:
       "Complete the career readiness journey",
     category:

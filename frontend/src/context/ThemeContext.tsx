@@ -15,11 +15,14 @@ import {
 } from "../services/api";
 
 export type ThemeMode = "dark" | "light" | "system";
+export type ExperienceMode = "cozy" | "advanced";
 
 type ThemeContextType = {
   theme: ThemeMode;
   resolvedTheme: "dark" | "light";
   setTheme: (theme: ThemeMode, persist?: boolean) => void;
+  experience: ExperienceMode;
+  setExperience: (exp: ExperienceMode, persist?: boolean) => void;
   // Kept for any existing code still calling the old boolean API.
   darkMode: boolean;
   toggleTheme: () => void;
@@ -29,7 +32,8 @@ const ThemeContext = createContext<ThemeContextType | undefined>(
   undefined
 );
 
-const STORAGE_KEY = "hiresense-theme";
+const THEME_STORAGE_KEY = "hagrids-theme";
+const EXPERIENCE_STORAGE_KEY = "hagrids-experience-mode";
 
 function getSystemPrefersDark() {
   if (typeof window === "undefined" || !window.matchMedia) {
@@ -45,35 +49,44 @@ function resolve(theme: ThemeMode): "dark" | "light" {
   return theme;
 }
 
-function applyToDocument(resolved: "dark" | "light") {
+function applyToDocument(resolved: "dark" | "light", experience: ExperienceMode) {
   document.documentElement.setAttribute("data-theme", resolved);
+  document.documentElement.setAttribute("data-experience", experience);
   document.documentElement.style.colorScheme = resolved;
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<ThemeMode>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(THEME_STORAGE_KEY) || localStorage.getItem("hiresense-theme");
     if (stored === "dark" || stored === "light" || stored === "system") {
       return stored;
     }
     return "dark";
   });
 
+  const [experience, setExperienceState] = useState<ExperienceMode>(() => {
+    const stored = localStorage.getItem(EXPERIENCE_STORAGE_KEY);
+    if (stored === "cozy" || stored === "advanced") {
+      return stored;
+    }
+    // The Cozy Experience is the default for Hagrid's Hut!
+    return "cozy";
+  });
+
   const [resolvedTheme, setResolvedTheme] = useState<"dark" | "light">(
     () => resolve(theme)
   );
 
-  // Apply immediately (and on every change) so there's no flash of
-  // the wrong theme, and so the effect works even before the
-  // backend has responded.
+  // Apply immediately (and on every change) so there's no flash
   useEffect(() => {
     const resolved = resolve(theme);
     setResolvedTheme(resolved);
-    applyToDocument(resolved);
-    localStorage.setItem(STORAGE_KEY, theme);
-  }, [theme]);
+    applyToDocument(resolved, experience);
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+    localStorage.setItem(EXPERIENCE_STORAGE_KEY, experience);
+  }, [theme, experience]);
 
-  // Follow OS theme changes live when in "system" mode.
+  // Follow OS theme changes live when in "system" mode
   useEffect(() => {
     if (theme !== "system" || !window.matchMedia) {
       return;
@@ -84,17 +97,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const handleChange = () => {
       const resolved = resolve("system");
       setResolvedTheme(resolved);
-      applyToDocument(resolved);
+      applyToDocument(resolved, experience);
     };
 
     media.addEventListener("change", handleChange);
     return () => media.removeEventListener("change", handleChange);
-  }, [theme]);
+  }, [theme, experience]);
 
-  // On first load, if the user is signed in, prefer whatever theme
-  // is saved on their account over the local device default -
-  // that's what makes it a real per-account preference rather than
-  // just a per-browser one.
+  // Sync with user's backend profile settings if signed in
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -111,24 +121,29 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         ) {
           setThemeState(savedTheme);
         }
+        const savedExp = data?.appearance?.experience;
+        if (savedExp === "cozy" || savedExp === "advanced") {
+          setExperienceState(savedExp);
+        }
       })
       .catch(() => {
-        // Not signed in yet, or backend unreachable - the local/
-        // default theme set above still applies, so the UI never
-        // breaks because of this.
+        // Safe fallback to local preference
       });
-    // Only ever run once per app load.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const setTheme = (next: ThemeMode, persist: boolean = true) => {
     setThemeState(next);
 
     if (persist && localStorage.getItem("token")) {
-      updateAppearanceSettings({ theme: next }).catch(() => {
-        // Theme still applies visually even if the save fails -
-        // it'll just fall back to the local value next reload.
-      });
+      updateAppearanceSettings({ theme: next }).catch(() => {});
+    }
+  };
+
+  const setExperience = (next: ExperienceMode, persist: boolean = true) => {
+    setExperienceState(next);
+
+    if (persist && localStorage.getItem("token")) {
+      updateAppearanceSettings({ experience: next } as any).catch(() => {});
     }
   };
 
@@ -142,6 +157,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         theme,
         resolvedTheme,
         setTheme,
+        experience,
+        setExperience,
         darkMode: resolvedTheme === "dark",
         toggleTheme,
       }}

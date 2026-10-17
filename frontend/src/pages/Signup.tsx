@@ -514,15 +514,11 @@ function Signup() {
           >
 
             <span>
-              HireSense
-              <strong>
-                AI
-              </strong>
+              Hagrid's Hut
             </span>
 
-
             <small>
-              AI CAREER INTELLIGENCE
+              BY THE SORTED CLUB
             </small>
 
           </div>
@@ -780,7 +776,7 @@ function Signup() {
 
 
                 <p>
-                  Start your HireSense AI journey.
+                  Start your Hagrid's Hut journey — a product of The Sorted Club.
                 </p>
 
               </div>
@@ -1163,7 +1159,7 @@ function Signup() {
 
                   <>
 
-                    Create HireSense Account
+                    Create Your Account
 
                     <ArrowRight
                       size={20}

@@ -322,7 +322,7 @@ function UnavailableRoute() {
             "
           >
             The destination you requested is not available in
-            the current HireSense workspace. It may have moved,
+            the current Hagrid's Hut workspace. It may have moved,
             been removed, or never been deployed.
           </p>
 

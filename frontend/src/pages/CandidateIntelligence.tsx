@@ -1341,7 +1341,7 @@ function CandidateIntelligence() {
                   sm:text-[15px]
                 "
               >
-                HireSense combines resume quality,
+                Hagrid's Hut combines resume quality,
                 interview performance, communication,
                 confidence, voice and visual signals
                 into a continuously evolving

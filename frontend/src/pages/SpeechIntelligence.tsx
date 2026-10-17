@@ -1231,7 +1231,7 @@ export default function SpeechIntelligence() {
             "
           >
             Record your voice or upload an interview response.
-            HireSense analyzes communication quality, pacing,
+            Hagrid's Hut analyzes communication quality, pacing,
             confidence, filler words, clarity, and recruiter
             readiness.
           </p>
@@ -1981,7 +1981,7 @@ export default function SpeechIntelligence() {
                   text-slate-500
                 "
               >
-                HireSense combines transcription, objective
+                Hagrid's Hut combines transcription, objective
                 speech metrics, filler-word detection and
                 recruiter-style AI evaluation.
               </p>
@@ -3075,7 +3075,7 @@ export default function SpeechIntelligence() {
                       text-white
                     "
                   >
-                    What HireSense heard
+                    What Hagrid's Hut heard
                   </h3>
 
                 </div>

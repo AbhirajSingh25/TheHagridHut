@@ -53,7 +53,7 @@ function ProtectedRoute({
         "
       >
 
-        Loading HireSense AI...
+        Loading Hagrid's Hut...
 
       </div>
 

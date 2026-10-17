@@ -1,0 +1,36 @@
+{
+  "name": "Hagrid's Hut",
+  "short_name": "Hagrid's Hut",
+  "description": "Your corner of the world to get career-ready. A product of The Sorted Club.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#211B17",
+  "theme_color": "#35251D",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "64x64 128x128 256x256 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "business", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Interview Practice",
+      "url": "/practice",
+      "description": "Practise real interview questions in your study"
+    },
+    {
+      "name": "Resume Workshop",
+      "url": "/resume",
+      "description": "Refine and score your resume"
+    },
+    {
+      "name": "Study Desk",
+      "url": "/dashboard",
+      "description": "View career progress and next steps"
+    }
+  ]
+}

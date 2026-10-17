@@ -225,7 +225,7 @@ function Login() {
 
 
       toast.success(
-        "Welcome back to HireSense AI."
+        "Welcome back to Hagrid's Hut."
       );
 
 
@@ -492,17 +492,9 @@ function Login() {
                 "
               >
 
-                HireSense
-
-                <span
-                  className="
-                    ml-1
-                    text-violet-400
-                  "
-                >
-
-                  AI
-
+                Hagrid's Hut
+                <span className="block text-[10px] font-normal text-[#E8AD62] tracking-wider uppercase mt-0.5">
+                  by The Sorted Club
                 </span>
 
               </div>
@@ -906,7 +898,7 @@ function Login() {
               "
             >
 
-              © 2026 HireSense AI
+              © 2026 Hagrid's Hut · A product of The Sorted Club
 
             </div>
 
@@ -1019,7 +1011,7 @@ function Login() {
                   >
 
                     Continue building your career
-                    with HireSense AI.
+                    with Hagrid's Hut.
 
                   </p>
 
@@ -1356,7 +1348,7 @@ function Login() {
 
                   {loading
                     ? "Signing in..."
-                    : "Sign In to HireSense"}
+                    : "Sign In to Hagrid's Hut"}
 
 
                   {!loading && (
@@ -1474,7 +1466,7 @@ function Login() {
               "
             >
 
-              HireSense AI
+              Hagrid's Hut
 
             </span>
 
@@ -1627,7 +1619,7 @@ function Login() {
 
               {loading
                 ? "Signing in..."
-                : "Sign In to HireSense"}
+                : "Sign In to Hagrid's Hut"}
 
             </button>
 
