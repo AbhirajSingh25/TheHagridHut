@@ -7,7 +7,6 @@ import {
   motion,
 } from "framer-motion";
 
-import MainLayout from "../components/MainLayout";
 import PageLayout from "../components/PageLayout";
 import AnimatedPage from "../components/AnimatedPage";
 import PremiumCard from "../components/PremiumCard";
@@ -122,8 +121,7 @@ function Notifications() {
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   return (
-    <MainLayout>
-      <AnimatedPage>
+    <AnimatedPage>
         <PageLayout
           title="Notifications"
           subtitle="AI-generated interview updates and recruiter intelligence"
@@ -211,7 +209,6 @@ function Notifications() {
           )}
         </PageLayout>
       </AnimatedPage>
-    </MainLayout>
   );
 }
 

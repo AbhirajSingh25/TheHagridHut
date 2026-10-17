@@ -11,6 +11,10 @@ import {
   AuthProvider,
 } from "./context/AuthContext";
 
+import {
+  ThemeProvider,
+} from "./context/ThemeContext";
+
 import "./index.css";
 
 
@@ -24,11 +28,15 @@ ReactDOM.createRoot(
 
   <React.StrictMode>
 
-    <AuthProvider>
+    <ThemeProvider>
 
-      <App />
+      <AuthProvider>
 
-    </AuthProvider>
+        <App />
+
+      </AuthProvider>
+
+    </ThemeProvider>
 
   </React.StrictMode>
 

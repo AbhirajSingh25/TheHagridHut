@@ -27,6 +27,18 @@ import {
   Volume2,
 } from "lucide-react";
 
+import {
+  getSettings,
+  updateAppearanceSettings,
+  updateNotificationSettings,
+  updateAIPreferences,
+  updatePrivacySettings,
+  updateSecuritySettings,
+  changePassword,
+} from "../services/api";
+
+import { useTheme } from "../context/ThemeContext";
+
 type SettingsSection =
   | "appearance"
   | "notifications"
@@ -209,10 +221,15 @@ const sidebarItems: {
 ];
 
 const Settings: React.FC = () => {
+  const { theme: activeTheme, setTheme: applyTheme } = useTheme();
+
   const [activeSection, setActiveSection] =
     useState<SettingsSection>("appearance");
 
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   const [appearance, setAppearance] = useState({
     theme: "dark",
@@ -224,15 +241,19 @@ const Settings: React.FC = () => {
     email: true,
     interview: true,
     report: true,
+    // These two have no backend field yet, so they stay
+    // browser-local (see the "(saved on this device only)"
+    // note next to them below) rather than pretending to sync.
     achievements: true,
-    marketing: false,
     sound: true,
+    marketing: false,
   });
 
   const [aiPreferences, setAiPreferences] = useState({
     followUps: true,
     detailedFeedback: true,
     adaptiveDifficulty: true,
+    // No backend field for this one yet - browser-local only.
     speechInsights: true,
   });
 
@@ -247,64 +268,231 @@ const Settings: React.FC = () => {
     loginAlerts: true,
   });
 
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+
   useEffect(() => {
-    const storedSettings = localStorage.getItem(
-      "hiresense-settings"
+    // Fields with no backend equivalent (achievements/sound/speech
+    // insights toggles) still read/write a small local-only cache,
+    // since there's genuinely nowhere on the server to persist them.
+    const localOnly = localStorage.getItem(
+      "hiresense-settings-local-only"
     );
 
-    if (!storedSettings) {
+    if (localOnly) {
+      try {
+        const parsed = JSON.parse(localOnly);
+
+        if (typeof parsed.achievements === "boolean") {
+          setNotifications((prev) => ({
+            ...prev,
+            achievements: parsed.achievements,
+          }));
+        }
+
+        if (typeof parsed.sound === "boolean") {
+          setNotifications((prev) => ({
+            ...prev,
+            sound: parsed.sound,
+          }));
+        }
+
+        if (typeof parsed.speechInsights === "boolean") {
+          setAiPreferences((prev) => ({
+            ...prev,
+            speechInsights: parsed.speechInsights,
+          }));
+        }
+      } catch {
+        // Ignore malformed local cache - defaults above still apply.
+      }
+    }
+
+    const loadSettings = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const data = await getSettings();
+
+        if (data.appearance) {
+          setAppearance((prev) => ({
+            ...prev,
+            theme: data.appearance.theme ?? prev.theme,
+            compactMode:
+              data.appearance.compact_mode ?? prev.compactMode,
+            animations:
+              data.appearance.animations_enabled ?? prev.animations,
+          }));
+        }
+
+        if (data.notifications) {
+          setNotifications((prev) => ({
+            ...prev,
+            email:
+              data.notifications.email_notifications ?? prev.email,
+            interview:
+              data.notifications.interview_reminders ??
+              prev.interview,
+            report:
+              data.notifications.performance_notifications ??
+              prev.report,
+            marketing:
+              data.notifications.product_updates ?? prev.marketing,
+          }));
+        }
+
+        if (data.ai_preferences) {
+          setAiPreferences((prev) => ({
+            ...prev,
+            followUps:
+              data.ai_preferences.ai_suggestions_enabled ??
+              prev.followUps,
+            detailedFeedback:
+              data.ai_preferences.ai_feedback_level === "detailed",
+            adaptiveDifficulty:
+              data.ai_preferences.interview_difficulty === "adaptive",
+          }));
+        }
+
+        if (data.privacy) {
+          setPrivacy((prev) => ({
+            ...prev,
+            profileVisible:
+              data.privacy.profile_visibility !== "private",
+            analytics:
+              data.privacy.analytics_tracking ?? prev.analytics,
+            personalizedExperience:
+              data.privacy.data_collection ??
+              prev.personalizedExperience,
+          }));
+        }
+
+        if (data.security) {
+          setSecurity((prev) => ({
+            ...prev,
+            twoFactor:
+              data.security.two_factor_enabled ?? prev.twoFactor,
+            loginAlerts:
+              data.security.login_alerts ?? prev.loginAlerts,
+          }));
+        }
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Could not load your settings. Showing defaults instead."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  const saveSettings = async () => {
+    setSaving(true);
+    setError("");
+
+    // Cache the fields that have no backend support yet, locally.
+    localStorage.setItem(
+      "hiresense-settings-local-only",
+      JSON.stringify({
+        achievements: notifications.achievements,
+        sound: notifications.sound,
+        speechInsights: aiPreferences.speechInsights,
+      })
+    );
+
+    try {
+      await Promise.all([
+        updateAppearanceSettings({
+          theme: appearance.theme,
+          compact_mode: appearance.compactMode,
+          animations_enabled: appearance.animations,
+        }),
+        updateNotificationSettings({
+          email_notifications: notifications.email,
+          interview_reminders: notifications.interview,
+          performance_notifications: notifications.report,
+          product_updates: notifications.marketing,
+        }),
+        updateAIPreferences({
+          ai_suggestions_enabled: aiPreferences.followUps,
+          ai_feedback_level: aiPreferences.detailedFeedback
+            ? "detailed"
+            : "balanced",
+          interview_difficulty: aiPreferences.adaptiveDifficulty
+            ? "adaptive"
+            : "medium",
+        }),
+        updatePrivacySettings({
+          profile_visibility: privacy.profileVisible
+            ? "public"
+            : "private",
+          analytics_tracking: privacy.analytics,
+          data_collection: privacy.personalizedExperience,
+        }),
+        updateSecuritySettings({
+          two_factor_enabled: security.twoFactor,
+          login_alerts: security.loginAlerts,
+        }),
+      ]);
+
+      setSaved(true);
+
+      window.setTimeout(() => {
+        setSaved(false);
+      }, 2500);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Could not save your settings. Please try again."
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const submitPasswordChange = async () => {
+    if (!currentPassword || !newPassword) {
+      setPasswordError("Both fields are required.");
       return;
     }
 
-    try {
-      const parsed = JSON.parse(storedSettings);
-
-      if (parsed.appearance) {
-        setAppearance(parsed.appearance);
-      }
-
-      if (parsed.notifications) {
-        setNotifications(parsed.notifications);
-      }
-
-      if (parsed.aiPreferences) {
-        setAiPreferences(parsed.aiPreferences);
-      }
-
-      if (parsed.privacy) {
-        setPrivacy(parsed.privacy);
-      }
-
-      if (parsed.security) {
-        setSecurity(parsed.security);
-      }
-    } catch (error) {
-      console.error(
-        "Unable to load settings:",
-        error
-      );
+    if (newPassword.length < 6) {
+      setPasswordError("New password must be at least 6 characters.");
+      return;
     }
-  }, []);
 
-  const saveSettings = () => {
-    const settings = {
-      appearance,
-      notifications,
-      aiPreferences,
-      privacy,
-      security,
-    };
+    setPasswordSaving(true);
+    setPasswordError("");
 
-    localStorage.setItem(
-      "hiresense-settings",
-      JSON.stringify(settings)
-    );
+    try {
+      await changePassword(currentPassword, newPassword);
+      setPasswordSuccess(true);
+      setCurrentPassword("");
+      setNewPassword("");
 
-    setSaved(true);
-
-    window.setTimeout(() => {
-      setSaved(false);
-    }, 2500);
+      window.setTimeout(() => {
+        setPasswordSuccess(false);
+        setChangingPassword(false);
+      }, 2000);
+    } catch (err) {
+      setPasswordError(
+        err instanceof Error
+          ? err.message
+          : "Could not change your password. Please try again."
+      );
+    } finally {
+      setPasswordSaving(false);
+    }
   };
 
   const getSectionTitle = () => {
@@ -362,12 +550,13 @@ const Settings: React.FC = () => {
         >
           <button
             type="button"
-            onClick={() =>
+            onClick={() => {
               setAppearance({
                 ...appearance,
                 theme: "dark",
-              })
-            }
+              });
+              applyTheme("dark", false);
+            }}
             style={{
               display: "flex",
               alignItems: "center",
@@ -376,15 +565,15 @@ const Settings: React.FC = () => {
               borderRadius: "10px",
               border: "1px solid",
               borderColor:
-                appearance.theme === "dark"
+                activeTheme === "dark"
                   ? "rgba(139,92,246,0.7)"
                   : "rgba(148,163,184,0.15)",
               background:
-                appearance.theme === "dark"
+                activeTheme === "dark"
                   ? "rgba(124,58,237,0.18)"
                   : "rgba(255,255,255,0.03)",
               color:
-                appearance.theme === "dark"
+                activeTheme === "dark"
                   ? "#ddd6fe"
                   : "#94a3b8",
               cursor: "pointer",
@@ -397,12 +586,13 @@ const Settings: React.FC = () => {
 
           <button
             type="button"
-            onClick={() =>
+            onClick={() => {
               setAppearance({
                 ...appearance,
                 theme: "light",
-              })
-            }
+              });
+              applyTheme("light", false);
+            }}
             style={{
               display: "flex",
               alignItems: "center",
@@ -411,15 +601,15 @@ const Settings: React.FC = () => {
               borderRadius: "10px",
               border: "1px solid",
               borderColor:
-                appearance.theme === "light"
+                activeTheme === "light"
                   ? "rgba(6,182,212,0.7)"
                   : "rgba(148,163,184,0.15)",
               background:
-                appearance.theme === "light"
+                activeTheme === "light"
                   ? "rgba(6,182,212,0.12)"
                   : "rgba(255,255,255,0.03)",
               color:
-                appearance.theme === "light"
+                activeTheme === "light"
                   ? "#67e8f9"
                   : "#94a3b8",
               cursor: "pointer",
@@ -432,12 +622,13 @@ const Settings: React.FC = () => {
 
           <button
             type="button"
-            onClick={() =>
+            onClick={() => {
               setAppearance({
                 ...appearance,
                 theme: "system",
-              })
-            }
+              });
+              applyTheme("system", false);
+            }}
             style={{
               display: "flex",
               alignItems: "center",
@@ -446,15 +637,15 @@ const Settings: React.FC = () => {
               borderRadius: "10px",
               border: "1px solid",
               borderColor:
-                appearance.theme === "system"
+                activeTheme === "system"
                   ? "rgba(16,185,129,0.7)"
                   : "rgba(148,163,184,0.15)",
               background:
-                appearance.theme === "system"
+                activeTheme === "system"
                   ? "rgba(16,185,129,0.1)"
                   : "rgba(255,255,255,0.03)",
               color:
-                appearance.theme === "system"
+                activeTheme === "system"
                   ? "#6ee7b7"
                   : "#94a3b8",
               cursor: "pointer",
@@ -554,7 +745,7 @@ const Settings: React.FC = () => {
       <SettingRow
         icon={<Sparkles size={18} />}
         title="Achievement alerts"
-        description="Receive notifications when you unlock new milestones."
+        description="Receive notifications when you unlock new milestones. (Saved on this device only.)"
       >
         <Toggle
           enabled={notifications.achievements}
@@ -570,7 +761,7 @@ const Settings: React.FC = () => {
       <SettingRow
         icon={<Volume2 size={18} />}
         title="Notification sounds"
-        description="Play subtle sounds for important activity and updates."
+        description="Play subtle sounds for important activity and updates. (Saved on this device only.)"
       >
         <Toggle
           enabled={notifications.sound}
@@ -638,7 +829,7 @@ const Settings: React.FC = () => {
       <SettingRow
         icon={<Volume2 size={18} />}
         title="Speech intelligence"
-        description="Enable speech pacing, filler word, and delivery insights."
+        description="Enable speech pacing, filler word, and delivery insights. (Saved on this device only.)"
       >
         <Toggle
           enabled={aiPreferences.speechInsights}
@@ -746,6 +937,11 @@ const Settings: React.FC = () => {
       >
         <button
           type="button"
+          onClick={() => {
+            setChangingPassword(!changingPassword);
+            setPasswordError("");
+            setPasswordSuccess(false);
+          }}
           style={{
             border: "1px solid rgba(148,163,184,0.18)",
             background: "rgba(255,255,255,0.03)",
@@ -756,9 +952,100 @@ const Settings: React.FC = () => {
             cursor: "pointer",
           }}
         >
-          Change password
+          {changingPassword ? "Cancel" : "Change password"}
         </button>
       </SettingRow>
+
+      {changingPassword && (
+        <div
+          style={{
+            marginTop: "6px",
+            marginBottom: "20px",
+            padding: "20px",
+            borderRadius: "14px",
+            border: "1px solid rgba(148,163,184,0.14)",
+            background: "rgba(255,255,255,0.02)",
+          }}
+        >
+          <input
+            type="password"
+            placeholder="Current password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px 14px",
+              borderRadius: "10px",
+              border: "1px solid rgba(148,163,184,0.18)",
+              background: "rgba(11,17,32,0.8)",
+              color: "#f8fafc",
+              outline: "none",
+              marginBottom: "12px",
+              boxSizing: "border-box",
+            }}
+          />
+
+          <input
+            type="password"
+            placeholder="New password (min. 6 characters)"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "10px 14px",
+              borderRadius: "10px",
+              border: "1px solid rgba(148,163,184,0.18)",
+              background: "rgba(11,17,32,0.8)",
+              color: "#f8fafc",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+
+          {passwordError && (
+            <p
+              style={{
+                color: "#fca5a5",
+                fontSize: "12px",
+                marginTop: "10px",
+              }}
+            >
+              {passwordError}
+            </p>
+          )}
+
+          {passwordSuccess && (
+            <p
+              style={{
+                color: "#6ee7b7",
+                fontSize: "12px",
+                marginTop: "10px",
+              }}
+            >
+              Password changed successfully.
+            </p>
+          )}
+
+          <button
+            type="button"
+            onClick={submitPasswordChange}
+            disabled={passwordSaving}
+            style={{
+              marginTop: "14px",
+              border: "1px solid rgba(6,182,212,0.35)",
+              background: "rgba(6,182,212,0.12)",
+              color: "#67e8f9",
+              padding: "9px 16px",
+              borderRadius: "10px",
+              fontSize: "12px",
+              cursor: passwordSaving ? "not-allowed" : "pointer",
+              opacity: passwordSaving ? 0.6 : 1,
+            }}
+          >
+            {passwordSaving ? "Updating..." : "Update password"}
+          </button>
+        </div>
+      )}
     </>
   );
 
@@ -1122,18 +1409,34 @@ const Settings: React.FC = () => {
                 padding:
                   "18px 32px",
                 display: "flex",
+                alignItems: "center",
                 justifyContent: "flex-end",
+                gap: "16px",
               }}
             >
+              {error && (
+                <p
+                  style={{
+                    color: "#fca5a5",
+                    fontSize: "12px",
+                    margin: 0,
+                  }}
+                >
+                  {error}
+                </p>
+              )}
+
               <button
                 type="button"
                 onClick={saveSettings}
+                disabled={saving || loading}
                 style={{
                   minWidth: "140px",
                   padding: "11px 16px",
                   border: "none",
                   borderRadius: "11px",
-                  cursor: "pointer",
+                  cursor: saving || loading ? "not-allowed" : "pointer",
+                  opacity: saving || loading ? 0.7 : 1,
                   color: "#ffffff",
                   fontSize: "13px",
                   fontWeight: 700,
@@ -1154,6 +1457,8 @@ const Settings: React.FC = () => {
                     <Check size={16} />
                     Saved
                   </>
+                ) : saving ? (
+                  <>Saving...</>
                 ) : (
                   <>
                     <Save size={16} />

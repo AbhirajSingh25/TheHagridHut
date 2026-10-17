@@ -155,7 +155,7 @@ function Dashboard() {
             className="
               text-sm
               font-medium
-              text-white
+              text-[var(--text)]
             "
           >
             Loading AI workspace
@@ -165,7 +165,7 @@ function Dashboard() {
             className="
               mt-2
               text-xs
-              text-slate-500
+              text-[var(--muted)]
             "
           >
             Synchronizing your performance data...
@@ -321,8 +321,8 @@ function Dashboard() {
           overflow-hidden
           rounded-3xl
           border
-          border-white/[0.07]
-          bg-white/[0.025]
+          border-[var(--border)]
+          bg-[var(--overlay-soft)]
           px-7
           py-8
           md:px-10
@@ -449,9 +449,9 @@ function Dashboard() {
               items-center
               gap-1
               text-xs
-              text-slate-500
+              text-[var(--muted)]
               transition
-              hover:text-white
+              hover:text-[var(--text)]
             "
           >
 
@@ -580,7 +580,7 @@ function Dashboard() {
                 className="
                   text-xl
                   font-semibold
-                  text-white
+                  text-[var(--text)]
                 "
               >
                 Interview Performance
@@ -591,7 +591,7 @@ function Dashboard() {
                 className="
                   mt-1
                   text-xs
-                  text-slate-500
+                  text-[var(--muted)]
                 "
               >
                 Current capability profile
@@ -608,14 +608,14 @@ function Dashboard() {
                 rounded-lg
                 border
                 border-white/10
-                bg-white/[0.03]
+                bg-[var(--overlay-soft)]
                 px-3
                 py-2
                 text-[11px]
-                text-slate-400
+                text-[var(--text-soft)]
                 transition
                 hover:border-purple-500/30
-                hover:text-white
+                hover:text-[var(--text)]
               "
             >
               Full analytics →
@@ -638,7 +638,7 @@ function Dashboard() {
                 min-h-[340px]
                 rounded-2xl
                 border
-                border-white/[0.05]
+                border-[var(--border)]
                 bg-black/20
                 p-3
               "
@@ -683,7 +683,7 @@ function Dashboard() {
                       <span
                         className="
                           text-xs
-                          text-slate-300
+                          text-[var(--text-soft)]
                         "
                       >
                         {item.title}
@@ -707,7 +707,7 @@ function Dashboard() {
                         h-1.5
                         overflow-hidden
                         rounded-full
-                        bg-white/[0.06]
+                        bg-[var(--overlay-med)]
                       "
                     >
 
@@ -792,7 +792,7 @@ function Dashboard() {
                 className="
                   text-xl
                   font-semibold
-                  text-white
+                  text-[var(--text)]
                 "
               >
                 Your next move
@@ -844,13 +844,13 @@ function Dashboard() {
                     className="
                       rounded-xl
                       border
-                      border-white/[0.06]
-                      bg-white/[0.02]
+                      border-[var(--border)]
+                      bg-[var(--overlay-soft)]
                       p-4
                       transition
                       duration-300
                       hover:border-white/10
-                      hover:bg-white/[0.035]
+                      hover:bg-[var(--overlay-soft)]
                     "
                   >
 
@@ -889,7 +889,7 @@ function Dashboard() {
                           className="
                             text-sm
                             font-medium
-                            text-white
+                            text-[var(--text)]
                           "
                         >
                           {item.title}
@@ -901,7 +901,7 @@ function Dashboard() {
                             mt-1
                             text-[11px]
                             leading-relaxed
-                            text-slate-500
+                            text-[var(--muted)]
                           "
                         >
                           {item.description}
@@ -963,15 +963,15 @@ function Dashboard() {
                     group
                     rounded-2xl
                     border
-                    border-white/[0.07]
-                    bg-white/[0.025]
+                    border-[var(--border)]
+                    bg-[var(--overlay-soft)]
                     p-5
                     text-left
                     transition-all
                     duration-300
                     hover:-translate-y-1
                     hover:border-purple-500/25
-                    hover:bg-white/[0.04]
+                    hover:bg-[var(--overlay-med)]
                   "
                 >
 
@@ -994,7 +994,7 @@ function Dashboard() {
                         rounded-xl
                         border
                         border-white/10
-                        bg-white/[0.04]
+                        bg-[var(--overlay-med)]
                         transition
                         group-hover:border-purple-500/20
                         group-hover:bg-purple-500/10
@@ -1004,7 +1004,7 @@ function Dashboard() {
                       <Icon
                         size={18}
                         className="
-                          text-slate-400
+                          text-[var(--text-soft)]
                           transition
                           group-hover:text-purple-400
                         "
@@ -1016,7 +1016,7 @@ function Dashboard() {
                     <ArrowUpRight
                       size={17}
                       className="
-                        text-slate-600
+                        text-[var(--muted)]
                         transition
                         group-hover:text-purple-400
                         group-hover:translate-x-0.5
@@ -1031,7 +1031,7 @@ function Dashboard() {
                     className="
                       text-sm
                       font-semibold
-                      text-white
+                      text-[var(--text)]
                     "
                   >
                     {item.title}
@@ -1043,7 +1043,7 @@ function Dashboard() {
                       mt-2
                       text-xs
                       leading-relaxed
-                      text-slate-500
+                      text-[var(--muted)]
                     "
                   >
                     {item.description}
@@ -1118,7 +1118,7 @@ function Dashboard() {
               className="
                 text-xl
                 font-semibold
-                text-white
+                text-[var(--text)]
               "
             >
               Activity Timeline
@@ -1148,7 +1148,7 @@ function Dashboard() {
           flex-col
           gap-3
           border-t
-          border-white/[0.06]
+          border-[var(--border)]
           pt-5
           sm:flex-row
           sm:items-center
@@ -1178,7 +1178,7 @@ function Dashboard() {
               text-[10px]
               uppercase
               tracking-[0.2em]
-              text-slate-600
+              text-[var(--muted)]
             "
           >
             HireSense AI Engine Online
@@ -1190,7 +1190,7 @@ function Dashboard() {
         <span
           className="
             text-[10px]
-            text-slate-700
+            text-[var(--text-faint)]
           "
         >
           Intelligence layer synchronized

@@ -548,6 +548,105 @@ export async function getCandidateIntelligence() {
 }
 
 /* ====================================
+   SETTINGS
+==================================== */
+
+export async function getSettings() {
+  return request(
+    "/api/settings"
+  );
+}
+
+export async function updateAppearanceSettings(updates: {
+  theme?: string;
+  accent_color?: string;
+  compact_mode?: boolean;
+  animations_enabled?: boolean;
+}) {
+  return request(
+    "/api/settings/appearance",
+    {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }
+  );
+}
+
+export async function updateNotificationSettings(updates: {
+  email_notifications?: boolean;
+  interview_reminders?: boolean;
+  performance_notifications?: boolean;
+  product_updates?: boolean;
+}) {
+  return request(
+    "/api/settings/notifications",
+    {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }
+  );
+}
+
+export async function updateAIPreferences(updates: {
+  ai_feedback_level?: string;
+  ai_response_style?: string;
+  ai_suggestions_enabled?: boolean;
+  interview_difficulty?: string;
+}) {
+  return request(
+    "/api/settings/ai-preferences",
+    {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }
+  );
+}
+
+export async function updatePrivacySettings(updates: {
+  profile_visibility?: string;
+  analytics_tracking?: boolean;
+  data_collection?: boolean;
+  ai_training_consent?: boolean;
+}) {
+  return request(
+    "/api/settings/privacy",
+    {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }
+  );
+}
+
+export async function updateSecuritySettings(updates: {
+  two_factor_enabled?: boolean;
+  login_alerts?: boolean;
+}) {
+  return request(
+    "/api/settings/security",
+    {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    }
+  );
+}
+
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string
+) {
+  return request(
+    "/api/settings/password",
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        current_password: currentPassword,
+        new_password: newPassword,
+      }),
+    }
+  );
+}
+
+/* ====================================
    NOTES
 ==================================== */
 

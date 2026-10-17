@@ -648,14 +648,14 @@ function MainLayout({
       item.accent === "cyan"
         ? active
           ? "text-cyan-300"
-          : "text-slate-500 group-hover:text-cyan-300"
+          : "text-[var(--muted)] group-hover:text-cyan-300"
         : item.accent === "emerald"
           ? active
             ? "text-emerald-300"
-            : "text-slate-500 group-hover:text-emerald-300"
+            : "text-[var(--muted)] group-hover:text-emerald-300"
           : active
             ? "text-violet-300"
-            : "text-slate-500 group-hover:text-violet-300";
+            : "text-[var(--muted)] group-hover:text-violet-300";
 
 
     const activeBackground =
@@ -725,15 +725,15 @@ function MainLayout({
           ${
             active
               ? `
-                text-white
+                text-[var(--text)]
                 ${activeBackground}
               `
               : `
                 border-transparent
-                text-slate-500
-                hover:border-white/[0.06]
-                hover:bg-white/[0.035]
-                hover:text-slate-200
+                text-[var(--muted)]
+                hover:border-[var(--border)]
+                hover:bg-[var(--overlay-soft)]
+                hover:text-[var(--text)]
               `
           }
         `}
@@ -869,8 +869,8 @@ function MainLayout({
     <div
       className="
         min-h-screen
-        bg-[#05060b]
-        text-white
+        bg-[var(--bg)]
+        text-[var(--text)]
       "
     >
 
@@ -982,9 +982,9 @@ function MainLayout({
           h-screen
 
           border-r
-          border-white/[0.07]
+          border-[var(--border)]
 
-          bg-[#080a11]/95
+          bg-[var(--bg-elevated-glass)]
           backdrop-blur-2xl
 
           transition-all
@@ -1026,7 +1026,7 @@ function MainLayout({
               shrink-0
               items-center
               border-b
-              border-white/[0.06]
+              border-[var(--border)]
 
               ${
                 collapsed
@@ -1097,7 +1097,7 @@ function MainLayout({
                       text-[15px]
                       font-bold
                       tracking-tight
-                      text-white
+                      text-[var(--text)]
                     "
                   >
                     HireSense
@@ -1109,7 +1109,7 @@ function MainLayout({
                       text-[8px]
                       uppercase
                       tracking-[0.2em]
-                      text-slate-600
+                      text-[var(--muted)]
                     "
                   >
                     AI CAREER OS
@@ -1129,10 +1129,10 @@ function MainLayout({
               className="
                 rounded-lg
                 p-2
-                text-slate-500
+                text-[var(--muted)]
                 transition
-                hover:bg-white/[0.05]
-                hover:text-white
+                hover:bg-[var(--overlay-med)]
+                hover:text-[var(--text)]
                 lg:hidden
               "
             >
@@ -1168,7 +1168,7 @@ function MainLayout({
                   font-medium
                   uppercase
                   tracking-[0.22em]
-                  text-slate-700
+                  text-[var(--text-faint)]
                 "
               >
                 Workspace
@@ -1192,7 +1192,7 @@ function MainLayout({
               className="
                 my-5
                 h-px
-                bg-white/[0.05]
+                bg-[var(--overlay-med)]
               "
             />
 
@@ -1208,7 +1208,7 @@ function MainLayout({
                   font-medium
                   uppercase
                   tracking-[0.22em]
-                  text-slate-700
+                  text-[var(--text-faint)]
                 "
               >
                 Intelligence
@@ -1276,7 +1276,7 @@ function MainLayout({
                     ${
                       moreOpen
                         ? "border-violet-400/20 bg-violet-500/[0.08] text-violet-200"
-                        : "border-transparent text-slate-500 hover:border-white/[0.06] hover:bg-white/[0.035] hover:text-slate-200"
+                        : "border-transparent text-[var(--muted)] hover:border-[var(--border)] hover:bg-[var(--overlay-soft)] hover:text-[var(--text)]"
                     }
                   `}
                   aria-expanded={moreOpen}
@@ -1295,7 +1295,7 @@ function MainLayout({
                       ${
                         moreOpen
                           ? "bg-violet-400/10 text-violet-300"
-                          : "text-slate-500 group-hover:text-violet-300"
+                          : "text-[var(--muted)] group-hover:text-violet-300"
                       }
                     `}
                   >
@@ -1313,7 +1313,7 @@ function MainLayout({
                         className={`transition-transform ${
                           moreOpen
                             ? "translate-x-0.5 text-violet-300"
-                            : "text-slate-700"
+                            : "text-[var(--text-faint)]"
                         }`}
                       />
                     </>
@@ -1330,7 +1330,7 @@ function MainLayout({
               className="
                 my-5
                 h-px
-                bg-white/[0.05]
+                bg-[var(--overlay-med)]
               "
             />
 
@@ -1346,7 +1346,7 @@ function MainLayout({
                   font-medium
                   uppercase
                   tracking-[0.22em]
-                  text-slate-700
+                  text-[var(--text-faint)]
                 "
               >
                 Account
@@ -1376,7 +1376,7 @@ function MainLayout({
             className={`
               shrink-0
               border-t
-              border-white/[0.06]
+              border-[var(--border)]
 
               ${
                 collapsed
@@ -1493,9 +1493,9 @@ function MainLayout({
                 items-center
                 rounded-xl
                 border
-                border-white/[0.06]
-                bg-white/[0.02]
-                text-slate-500
+                border-[var(--border)]
+                bg-[var(--overlay-soft)]
+                text-[var(--muted)]
                 transition-all
                 duration-200
 
@@ -1548,8 +1548,8 @@ function MainLayout({
             w-[280px]
             overflow-y-auto
             border-r
-            border-white/[0.08]
-            bg-[#0a0d16]/[0.98]
+            border-[var(--border)]
+            bg-[var(--bg-elevated-glass)]
             p-4
             shadow-[24px_0_70px_rgba(0,0,0,0.45)]
             backdrop-blur-2xl
@@ -1572,13 +1572,13 @@ function MainLayout({
           }}
         >
 
-          <div className="flex items-start justify-between gap-4 border-b border-white/[0.06] pb-4">
+          <div className="flex items-start justify-between gap-4 border-b border-[var(--border)] pb-4">
             <div>
               <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-violet-300">
                 Extended workspace
               </p>
 
-              <p className="mt-1 text-sm font-semibold text-white">
+              <p className="mt-1 text-sm font-semibold text-[var(--text)]">
                 More capabilities
               </p>
             </div>
@@ -1589,7 +1589,7 @@ function MainLayout({
                 setMoreOpen(false);
                 setMorePinned(false);
               }}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.07] text-slate-500 transition hover:bg-white/[0.04] hover:text-white"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--border)] text-[var(--muted)] transition hover:bg-[var(--overlay-med)] hover:text-[var(--text)]"
               aria-label="Close more menu"
             >
               <X size={15} />
@@ -1626,8 +1626,8 @@ function MainLayout({
                     transition-all
                     ${
                       active
-                        ? "border-violet-400/20 bg-violet-500/[0.09] text-white"
-                        : "border-transparent text-slate-500 hover:border-white/[0.06] hover:bg-white/[0.035] hover:text-slate-200"
+                        ? "border-violet-400/20 bg-violet-500/[0.09] text-[var(--text)]"
+                        : "border-transparent text-[var(--muted)] hover:border-[var(--border)] hover:bg-[var(--overlay-soft)] hover:text-[var(--text)]"
                     }
                   `}
                 >
@@ -1635,7 +1635,7 @@ function MainLayout({
                   <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border ${
                     active
                       ? "border-violet-400/15 bg-violet-400/[0.08] text-violet-300"
-                      : "border-white/[0.05] bg-white/[0.02] text-slate-500 group-hover:text-violet-300"
+                      : "border-[var(--border)] bg-[var(--overlay-soft)] text-[var(--muted)] group-hover:text-violet-300"
                   }`}>
                     {item.icon}
                   </span>
@@ -1644,14 +1644,14 @@ function MainLayout({
                     <span className="block truncate text-[12px] font-medium">
                       {item.name}
                     </span>
-                    <span className="mt-0.5 block text-[10px] text-slate-700">
+                    <span className="mt-0.5 block text-[10px] text-[var(--text-faint)]">
                       {active ? "Current section" : "Open workspace"}
                     </span>
                   </span>
 
                   <ChevronRight
                     size={14}
-                    className="text-slate-700 transition-transform group-hover:translate-x-0.5 group-hover:text-slate-400"
+                    className="text-[var(--text-faint)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--text-soft)]"
                   />
 
                 </button>
@@ -1670,7 +1670,7 @@ function MainLayout({
               </span>
             </div>
 
-            <p className="mt-2 text-xs leading-5 text-slate-600">
+            <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
               Less-used capabilities stay here so the main sidebar remains focused instead of turning into a junk drawer. Humanity survives another menu.
             </p>
           </div>
@@ -1714,8 +1714,8 @@ function MainLayout({
             items-center
             justify-between
             border-b
-            border-white/[0.06]
-            bg-[#05060b]/80
+            border-[var(--border)]
+            bg-[var(--bg-glass)]
             px-4
             backdrop-blur-2xl
             sm:px-6
@@ -1745,11 +1745,11 @@ function MainLayout({
                 justify-center
                 rounded-lg
                 border
-                border-white/[0.07]
-                bg-white/[0.025]
-                text-slate-400
+                border-[var(--border)]
+                bg-[var(--overlay-soft)]
+                text-[var(--text-soft)]
                 transition
-                hover:text-white
+                hover:text-[var(--text)]
                 lg:hidden
               "
             >
@@ -1774,9 +1774,9 @@ function MainLayout({
                 justify-center
                 rounded-lg
                 border
-                border-white/[0.07]
-                bg-white/[0.025]
-                text-slate-500
+                border-[var(--border)]
+                bg-[var(--overlay-soft)]
+                text-[var(--muted)]
                 transition
                 hover:border-violet-400/20
                 hover:text-violet-300
@@ -1811,7 +1811,7 @@ function MainLayout({
                 hidden
                 h-5
                 w-px
-                bg-white/[0.07]
+                bg-[var(--overlay-med)]
                 sm:block
               "
             />
@@ -1825,7 +1825,7 @@ function MainLayout({
                   text-[9px]
                   uppercase
                   tracking-[0.2em]
-                  text-slate-700
+                  text-[var(--text-faint)]
                 "
               >
                 HireSense / Workspace
@@ -1837,7 +1837,7 @@ function MainLayout({
                   mt-0.5
                   text-xs
                   font-medium
-                  text-slate-400
+                  text-[var(--text-soft)]
                 "
               >
                 AI Career Intelligence
@@ -1870,13 +1870,13 @@ function MainLayout({
                 gap-2
                 rounded-lg
                 border
-                border-white/[0.07]
-                bg-white/[0.025]
+                border-[var(--border)]
+                bg-[var(--overlay-soft)]
                 px-3
-                text-slate-500
+                text-[var(--muted)]
                 transition
-                hover:border-white/[0.12]
-                hover:text-slate-300
+                hover:border-[var(--border-hover)]
+                hover:text-[var(--text-soft)]
               "
             >
 
@@ -1897,13 +1897,13 @@ function MainLayout({
                   hidden
                   rounded
                   border
-                  border-white/[0.08]
-                  bg-white/[0.03]
+                  border-[var(--border)]
+                  bg-[var(--overlay-soft)]
                   px-1.5
                   py-0.5
                   font-mono
                   text-[8px]
-                  text-slate-700
+                  text-[var(--text-faint)]
                   md:block
                 "
               >
@@ -1968,12 +1968,12 @@ function MainLayout({
                 justify-center
                 rounded-lg
                 border
-                border-white/[0.07]
-                bg-white/[0.025]
-                text-slate-500
+                border-[var(--border)]
+                bg-[var(--overlay-soft)]
+                text-[var(--muted)]
                 transition
-                hover:border-white/[0.12]
-                hover:text-white
+                hover:border-[var(--border-hover)]
+                hover:text-[var(--text)]
               "
             >
 
@@ -2000,7 +2000,7 @@ function MainLayout({
                 ml-1
                 h-7
                 w-px
-                bg-white/[0.07]
+                bg-[var(--overlay-med)]
               "
             />
 
@@ -2044,7 +2044,7 @@ function MainLayout({
                     to-fuchsia-500
                     text-xs
                     font-bold
-                    text-white
+                    text-[var(--text)]
                     transition
                     group-hover:shadow-[0_0_22px_rgba(139,92,246,0.22)]
                   "
@@ -2092,7 +2092,7 @@ function MainLayout({
                       truncate
                       text-[11px]
                       font-semibold
-                      text-slate-300
+                      text-[var(--text-soft)]
                     "
                   >
 
@@ -2110,7 +2110,7 @@ function MainLayout({
                       text-[8px]
                       uppercase
                       tracking-wider
-                      text-slate-600
+                      text-[var(--muted)]
                     "
                   >
                     Candidate
@@ -2123,14 +2123,14 @@ function MainLayout({
                   size={14}
                   className={`
                     hidden
-                    text-slate-600
+                    text-[var(--muted)]
                     transition-transform
                     duration-200
                     lg:block
                     ${
                       profileMenuOpen
                         ? "rotate-180 text-violet-300"
-                        : "group-hover:text-slate-300"
+                        : "group-hover:text-[var(--text-soft)]"
                     }
                   `}
                 />
@@ -2151,8 +2151,8 @@ function MainLayout({
                     overflow-hidden
                     rounded-2xl
                     border
-                    border-white/[0.08]
-                    bg-[#0b0e17]/95
+                    border-[var(--border)]
+                    bg-[var(--bg-elevated-glass)]
                     p-2
                     shadow-[0_28px_90px_rgba(0,0,0,0.5)]
                     backdrop-blur-2xl
@@ -2167,8 +2167,8 @@ function MainLayout({
                       gap-3
                       rounded-xl
                       border
-                      border-white/[0.05]
-                      bg-white/[0.025]
+                      border-[var(--border)]
+                      bg-[var(--overlay-soft)]
                       p-3
                     "
                   >
@@ -2187,7 +2187,7 @@ function MainLayout({
                         to-fuchsia-500
                         text-sm
                         font-bold
-                        text-white
+                        text-[var(--text)]
                       "
                     >
 
@@ -2226,7 +2226,7 @@ function MainLayout({
                           truncate
                           text-xs
                           font-semibold
-                          text-slate-200
+                          text-[var(--text)]
                         "
                       >
                         {user?.username || "Candidate"}
@@ -2237,7 +2237,7 @@ function MainLayout({
                           mt-1
                           truncate
                           text-[10px]
-                          text-slate-600
+                          text-[var(--muted)]
                         "
                       >
                         {
@@ -2301,7 +2301,7 @@ function MainLayout({
                         py-2.5
                         text-left
                         transition
-                        hover:bg-white/[0.045]
+                        hover:bg-[var(--overlay-med)]
                       "
                     >
 
@@ -2315,9 +2315,9 @@ function MainLayout({
                           justify-center
                           rounded-xl
                           border
-                          border-white/[0.05]
-                          bg-white/[0.025]
-                          text-slate-500
+                          border-[var(--border)]
+                          bg-[var(--overlay-soft)]
+                          text-[var(--muted)]
                           transition
                           group-hover:border-violet-400/15
                           group-hover:bg-violet-500/[0.06]
@@ -2334,9 +2334,9 @@ function MainLayout({
                             block
                             text-xs
                             font-medium
-                            text-slate-300
+                            text-[var(--text-soft)]
                             transition
-                            group-hover:text-white
+                            group-hover:text-[var(--text)]
                           "
                         >
                           {item.label}
@@ -2347,7 +2347,7 @@ function MainLayout({
                             mt-0.5
                             block
                             text-[10px]
-                            text-slate-600
+                            text-[var(--muted)]
                           "
                         >
                           {item.description}
@@ -2358,7 +2358,7 @@ function MainLayout({
                       <ChevronRight
                         size={14}
                         className="
-                          text-slate-700
+                          text-[var(--text-faint)]
                           transition
                           group-hover:text-violet-300
                         "
@@ -2373,7 +2373,7 @@ function MainLayout({
                     className="
                       my-2
                       h-px
-                      bg-white/[0.06]
+                      bg-[var(--overlay-med)]
                     "
                   />
 
@@ -2460,7 +2460,7 @@ function MainLayout({
                           mt-1
                           block
                           text-[10px]
-                          text-slate-600
+                          text-[var(--muted)]
                         "
                       >
                         Platform control center
@@ -2542,8 +2542,8 @@ function MainLayout({
               overflow-hidden
               rounded-2xl
               border
-              border-white/[0.09]
-              bg-[#0b0d15]
+              border-[var(--border)]
+              bg-[var(--bg-elevated)]
               shadow-[0_30px_100px_rgba(0,0,0,0.55)]
             "
             onMouseDown={(event) =>
@@ -2557,14 +2557,14 @@ function MainLayout({
                 items-center
                 gap-3
                 border-b
-                border-white/[0.07]
+                border-[var(--border)]
                 px-4
               "
             >
 
               <Search
                 size={17}
-                className="text-slate-500"
+                className="text-[var(--muted)]"
               />
 
 
@@ -2582,9 +2582,9 @@ function MainLayout({
                   flex-1
                   bg-transparent
                   text-sm
-                  text-white
+                  text-[var(--text)]
                   outline-none
-                  placeholder:text-slate-700
+                  placeholder:text-[var(--text-faint)]
                 "
                 onKeyDown={(event) => {
 
@@ -2616,12 +2616,12 @@ function MainLayout({
                 className="
                   rounded-md
                   border
-                  border-white/[0.08]
+                  border-[var(--border)]
                   px-2
                   py-1
                   font-mono
                   text-[9px]
-                  text-slate-600
+                  text-[var(--muted)]
                 "
               >
                 ESC
@@ -2640,7 +2640,7 @@ function MainLayout({
                   text-[9px]
                   uppercase
                   tracking-[0.18em]
-                  text-slate-700
+                  text-[var(--text-faint)]
                 "
               >
                 Quick navigation
@@ -2675,10 +2675,10 @@ function MainLayout({
                           px-3
                           py-3
                           text-left
-                          text-slate-400
+                          text-[var(--text-soft)]
                           transition
-                          hover:bg-white/[0.045]
-                          hover:text-white
+                          hover:bg-[var(--overlay-med)]
+                          hover:text-[var(--text)]
                         "
                       >
 
@@ -2690,8 +2690,8 @@ function MainLayout({
                             items-center
                             justify-center
                             rounded-lg
-                            bg-white/[0.025]
-                            text-slate-500
+                            bg-[var(--overlay-soft)]
+                            text-[var(--muted)]
                           "
                         >
 
@@ -2715,7 +2715,7 @@ function MainLayout({
                         <ChevronRight
                           size={13}
                           className="
-                            text-slate-700
+                            text-[var(--text-faint)]
                           "
                         />
 
@@ -2742,14 +2742,14 @@ function MainLayout({
                         className="
                           mx-auto
                           mb-3
-                          text-slate-700
+                          text-[var(--text-faint)]
                         "
                       />
 
                       <p
                         className="
                           text-sm
-                          text-slate-500
+                          text-[var(--muted)]
                         "
                       >
                         No navigation found
@@ -2771,7 +2771,7 @@ function MainLayout({
                 items-center
                 gap-2
                 border-t
-                border-white/[0.06]
+                border-[var(--border)]
                 px-4
                 py-3
               "
@@ -2786,7 +2786,7 @@ function MainLayout({
               <span
                 className="
                   text-[10px]
-                  text-slate-600
+                  text-[var(--muted)]
                 "
               >
                 HireSense command center

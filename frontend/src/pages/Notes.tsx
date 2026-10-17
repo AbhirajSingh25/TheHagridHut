@@ -3,8 +3,6 @@ import {
   useState,
 } from "react";
 
-import MainLayout from "../components/MainLayout";
-
 import {
   getNotes,
   createNote,
@@ -153,11 +151,10 @@ function Notes() {
   };
 
   return (
-    <MainLayout>
-      <div className="min-h-screen bg-[#050816] text-white px-8 py-10">
-        <h1 className="text-5xl font-bold text-cyan-400">
-          Interview Notes
-        </h1>
+    <div className="min-h-screen bg-[#050816] text-white px-8 py-10">
+      <h1 className="text-5xl font-bold text-cyan-400">
+        Interview Notes
+      </h1>
 
         <p className="text-gray-400 mt-3">
           Track interview learnings and improvement goals. Notes are
@@ -327,7 +324,6 @@ function Notes() {
           )}
         </div>
       </div>
-    </MainLayout>
   );
 }
 
