@@ -24,6 +24,31 @@ export default {
           DEFAULT: "#49372B",
           hover: "#372A21",
         },
+        // Harmonize legacy violet and cyan classes into the VANVAS palette
+        violet: {
+          50: "#F4F7F8",
+          100: "#E4ECF0",
+          200: "#C4D2D5",
+          300: "#8FA3AD",
+          400: "#667780",
+          500: "#526C7A",
+          600: "#3D525E",
+          700: "#273D4B",
+          800: "#1C2E38",
+          900: "#141F26",
+        },
+        cyan: {
+          50: "#F4F7F4",
+          100: "#E4EBE4",
+          200: "#C8D6C8",
+          300: "#A8BEA7",
+          400: "#8FA28B",
+          500: "#758A71",
+          600: "#5B6E57",
+          700: "#41523E",
+          800: "#314B40",
+          900: "#21332C",
+        },
       },
 
       fontFamily: {

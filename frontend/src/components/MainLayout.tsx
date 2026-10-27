@@ -859,7 +859,7 @@ function MainLayout({
             h-[420px]
             w-[420px]
             rounded-full
-            bg-violet-600/[0.035]
+            bg-[#D6A879]/[0.03]
             blur-[130px]
           "
         />
@@ -872,7 +872,7 @@ function MainLayout({
             h-[380px]
             w-[380px]
             rounded-full
-            bg-cyan-500/[0.025]
+            bg-[#8FA28B]/[0.025]
             blur-[130px]
           "
         />
