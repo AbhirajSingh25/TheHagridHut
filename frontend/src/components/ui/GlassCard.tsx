@@ -3,84 +3,37 @@ import React from "react";
 interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 
-function GlassCard({
+export default function GlassCard({
   children,
   className = "",
+  onClick,
 }: GlassCardProps) {
-
   return (
-
     <div
+      onClick={onClick}
       className={`
-        group
         relative
-        overflow-hidden
-        rounded-3xl
+        rounded-xl
         border
-        border-white/[0.07]
-        bg-[#080910]/75
-        backdrop-blur-xl
-        shadow-[0_20px_60px_rgba(0,0,0,0.25)]
+        border-[#49372B]/12
+        dark:border-[#E5D6BE]/12
+        bg-[#FAF5EC]
+        dark:bg-[#2E2721]
+        text-[#302820]
+        dark:text-[#F3EADD]
+        shadow-sm
         transition-all
-        duration-300
-        hover:border-purple-500/20
+        duration-200
+        hover:border-[#49372B]/25
+        dark:hover:border-[#E5D6BE]/25
+        hover:shadow-md
         ${className}
       `}
     >
-
-      {/* purple ambient glow */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          -right-24
-          -top-24
-          h-64
-          w-64
-          rounded-full
-          bg-purple-600/[0.06]
-          blur-3xl
-          transition
-          duration-500
-          group-hover:bg-purple-600/[0.12]
-        "
-      />
-
-
-      {/* cyan ambient glow */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          -bottom-32
-          left-1/3
-          h-52
-          w-52
-          rounded-full
-          bg-cyan-500/[0.04]
-          blur-3xl
-        "
-      />
-
-
-      <div
-        className="
-          relative
-          z-10
-        "
-      >
-        {children}
-      </div>
-
-
+      <div className="relative z-10">{children}</div>
     </div>
-
   );
 }
-
-
-export default GlassCard;

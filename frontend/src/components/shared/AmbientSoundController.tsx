@@ -8,7 +8,7 @@ export default function AmbientSoundController({ className = "" }: { className?:
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState<number>(() => {
     const saved = localStorage.getItem("hagrids-ambient-volume");
-    return saved ? parseFloat(saved) : 0.35;
+    return saved ? parseFloat(saved) : 0.3;
   });
   const [preset, setPreset] = useState<SoundPreset>(() => {
     const saved = localStorage.getItem("hagrids-ambient-preset");
@@ -21,7 +21,6 @@ export default function AmbientSoundController({ className = "" }: { className?:
   const gainNodeRef = useRef<GainNode | null>(null);
   const noiseSourceRef = useRef<AudioBufferSourceNode | null>(null);
   const filterNodeRef = useRef<BiquadFilterNode | null>(null);
-  const crackleTimerRef = useRef<number | null>(null);
 
   // Initialize or reconfigure sound synthesis
   const startAudio = () => {
@@ -63,26 +62,26 @@ export default function AmbientSoundController({ className = "" }: { className?:
       noiseSource.buffer = buffer;
       noiseSource.loop = true;
 
-      // Filter to mimic rain vs hearth
+      // Filter to mimic rain vs hearth vs gentle room tone
       const filter = ctx.createBiquadFilter();
       if (preset === "rain") {
         filter.type = "lowpass";
-        filter.frequency.setValueAtTime(850, ctx.currentTime);
-        filter.Q.setValueAtTime(1.5, ctx.currentTime);
+        filter.frequency.setValueAtTime(800, ctx.currentTime);
+        filter.Q.setValueAtTime(1.2, ctx.currentTime);
       } else if (preset === "hearth") {
         filter.type = "bandpass";
-        filter.frequency.setValueAtTime(450, ctx.currentTime);
-        filter.Q.setValueAtTime(2.2, ctx.currentTime);
+        filter.frequency.setValueAtTime(420, ctx.currentTime);
+        filter.Q.setValueAtTime(2.0, ctx.currentTime);
       } else {
         filter.type = "lowpass";
-        filter.frequency.setValueAtTime(500, ctx.currentTime);
-        filter.Q.setValueAtTime(1.0, ctx.currentTime);
+        filter.frequency.setValueAtTime(480, ctx.currentTime);
+        filter.Q.setValueAtTime(0.8, ctx.currentTime);
       }
 
       // Main Gain Node
       const gain = ctx.createGain();
       const currentVol = isMuted ? 0 : volume;
-      gain.gain.setValueAtTime(currentVol * 0.18, ctx.currentTime);
+      gain.gain.setValueAtTime(currentVol * 0.15, ctx.currentTime);
 
       noiseSource.connect(filter);
       filter.connect(gain);
@@ -107,10 +106,6 @@ export default function AmbientSoundController({ className = "" }: { className?:
       } catch (_) {}
       noiseSourceRef.current = null;
     }
-    if (crackleTimerRef.current) {
-      clearInterval(crackleTimerRef.current);
-      crackleTimerRef.current = null;
-    }
     setIsPlaying(false);
   };
 
@@ -125,7 +120,7 @@ export default function AmbientSoundController({ className = "" }: { className?:
   // Adjust volume live
   useEffect(() => {
     if (gainNodeRef.current && audioCtxRef.current) {
-      const targetGain = isMuted || !isPlaying ? 0 : volume * 0.18;
+      const targetGain = isMuted || !isPlaying ? 0 : volume * 0.15;
       gainNodeRef.current.gain.setTargetAtTime(
         targetGain,
         audioCtxRef.current.currentTime,
@@ -156,26 +151,26 @@ export default function AmbientSoundController({ className = "" }: { className?:
   }, []);
 
   return (
-    <div className={`relative inline-block select-none ${className}`}>
-      <div className="flex items-center gap-1 bg-[#1A1512]/90 border border-[rgba(232,173,98,0.22)] rounded-full px-2 py-1 shadow-md backdrop-blur-md">
+    <div className={`relative inline-block select-none text-xs font-sans ${className}`}>
+      <div className="flex items-center gap-1.5 bg-[#FAF5EC] dark:bg-[#2E2721] border border-[#49372B]/15 dark:border-[#E5D6BE]/15 rounded-full px-2.5 py-1 shadow-sm">
         {/* Play / Stop Button */}
         <button
           type="button"
           onClick={togglePlay}
-          className={`touch-target p-1.5 rounded-full transition-all duration-200 ${
+          className={`p-1 rounded-full transition-all ${
             isPlaying
-              ? "bg-[#E8AD62] text-[#211B17] shadow-sm"
-              : "text-[#B9AB97] hover:text-[#FFF7E9] hover:bg-[#2E231C]"
+              ? "bg-[#49372B] text-[#FAF5EC] dark:bg-[#E5D6BE] dark:text-[#302820]"
+              : "text-[#6B5D50] dark:text-[#B8AFA3] hover:text-[#302820] dark:hover:text-[#FAF5EC]"
           }`}
-          title={isPlaying ? "Pause study ambience" : "Listen to study ambience (Rain & Hearth)"}
+          title={isPlaying ? "Pause study ambience" : "Listen to rain study ambience"}
           aria-label={isPlaying ? "Pause ambient sound" : "Play ambient sound"}
         >
-          {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
+          {isPlaying ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3 ml-0.5" />}
         </button>
 
-        {/* Ambient indicator icon */}
-        <span className="text-xs text-[#EFE4D2] font-medium hidden sm:inline px-1">
-          {preset === "rain" ? "Rain" : preset === "hearth" ? "Hearth" : "Study"}
+        {/* Preset name */}
+        <span className="text-[11px] font-medium text-[#6B5D50] dark:text-[#B8AFA3]">
+          {preset === "rain" ? "Rain" : preset === "hearth" ? "Hearth" : "Room"}
         </span>
 
         {/* Mute button */}
@@ -183,87 +178,85 @@ export default function AmbientSoundController({ className = "" }: { className?:
           type="button"
           onClick={() => setIsMuted(!isMuted)}
           disabled={!isPlaying}
-          className={`p-1 rounded-full transition-colors ${
+          className={`p-0.5 rounded transition-colors ${
             !isPlaying
-              ? "opacity-40 cursor-not-allowed text-[#B9AB97]"
+              ? "opacity-40 cursor-not-allowed text-[#9B8D7F]"
               : isMuted
-              ? "text-[#D96B58]"
-              : "text-[#B9AB97] hover:text-[#FFF7E9]"
+              ? "text-[#AC5E50]"
+              : "text-[#6B5D50] dark:text-[#B8AFA3] hover:text-[#302820]"
           }`}
           title={isMuted ? "Unmute" : "Mute"}
           aria-label={isMuted ? "Unmute ambient sound" : "Mute ambient sound"}
         >
-          {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+          {isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
         </button>
 
-        {/* Expand settings popover */}
+        {/* Settings Toggle */}
         <button
           type="button"
           onClick={() => setIsExpanded(!isExpanded)}
-          className="p-1 rounded-full text-[#B9AB97] hover:text-[#FFF7E9] transition-transform"
+          className="p-0.5 text-[#9B8D7F] hover:text-[#302820] dark:hover:text-[#FAF5EC]"
           aria-label="Sound settings"
         >
           <ChevronUp
-            className={`w-3.5 h-3.5 transition-transform duration-200 ${
+            className={`w-3 h-3 transition-transform duration-150 ${
               isExpanded ? "rotate-180" : ""
             }`}
           />
         </button>
       </div>
 
-      {/* Expandable Ambience Menu */}
+      {/* Popover */}
       {isExpanded && (
-        <div className="absolute right-0 bottom-full mb-2 w-64 p-3 rounded-2xl bg-[#241B16] border border-[#E8AD62]/30 shadow-2xl z-50 text-left">
-          <div className="flex items-center justify-between pb-2 border-b border-[#E8AD62]/15 mb-3">
-            <span className="text-xs font-semibold text-[#FFF7E9] font-display">Study Ambience</span>
-            <span className="text-[10px] text-[#E8AD62] font-mono">WebAudio</span>
+        <div className="absolute right-0 bottom-full mb-2 w-56 p-3 rounded-lg bg-[#FAF5EC] dark:bg-[#2E2721] border border-[#49372B]/20 dark:border-[#E5D6BE]/20 shadow-lg z-50 text-left">
+          <div className="flex items-center justify-between pb-2 border-b border-[#49372B]/10 dark:border-[#E5D6BE]/10 mb-2">
+            <span className="text-xs font-semibold text-[#302820] dark:text-[#FAF5EC] font-serif">
+              Study Ambience
+            </span>
+            <span className="text-[10px] text-[#AC7256] font-medium">Optional</span>
           </div>
 
-          {/* Sound Presets */}
-          <div className="grid grid-cols-3 gap-1.5 mb-3">
+          <div className="grid grid-cols-3 gap-1 mb-2.5">
             <button
               type="button"
               onClick={() => setPreset("rain")}
-              className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs transition-all ${
+              className={`flex flex-col items-center gap-1 p-1.5 rounded text-[11px] transition-colors ${
                 preset === "rain"
-                  ? "bg-[#E8AD62]/20 border border-[#E8AD62]/40 text-[#F6CD8B]"
-                  : "bg-[#1A1512] text-[#B9AB97] hover:text-[#FFF7E9]"
+                  ? "bg-[#49372B] text-[#FAF5EC]"
+                  : "bg-[#F0E9DC] dark:bg-[#383029] text-[#6B5D50] dark:text-[#B8AFA3]"
               }`}
             >
-              <CloudRain className="w-4 h-4" />
-              <span className="text-[10px]">Rain</span>
+              <CloudRain className="w-3.5 h-3.5" />
+              <span>Rain</span>
             </button>
-
             <button
               type="button"
               onClick={() => setPreset("hearth")}
-              className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs transition-all ${
+              className={`flex flex-col items-center gap-1 p-1.5 rounded text-[11px] transition-colors ${
                 preset === "hearth"
-                  ? "bg-[#E8AD62]/20 border border-[#E8AD62]/40 text-[#F6CD8B]"
-                  : "bg-[#1A1512] text-[#B9AB97] hover:text-[#FFF7E9]"
+                  ? "bg-[#49372B] text-[#FAF5EC]"
+                  : "bg-[#F0E9DC] dark:bg-[#383029] text-[#6B5D50] dark:text-[#B8AFA3]"
               }`}
             >
-              <Flame className="w-4 h-4" />
-              <span className="text-[10px]">Hearth</span>
+              <Flame className="w-3.5 h-3.5" />
+              <span>Hearth</span>
             </button>
-
             <button
               type="button"
               onClick={() => setPreset("study")}
-              className={`flex flex-col items-center gap-1 p-2 rounded-xl text-xs transition-all ${
+              className={`flex flex-col items-center gap-1 p-1.5 rounded text-[11px] transition-colors ${
                 preset === "study"
-                  ? "bg-[#E8AD62]/20 border border-[#E8AD62]/40 text-[#F6CD8B]"
-                  : "bg-[#1A1512] text-[#B9AB97] hover:text-[#FFF7E9]"
+                  ? "bg-[#49372B] text-[#FAF5EC]"
+                  : "bg-[#F0E9DC] dark:bg-[#383029] text-[#6B5D50] dark:text-[#B8AFA3]"
               }`}
             >
-              <Moon className="w-4 h-4" />
-              <span className="text-[10px]">Night</span>
+              <Moon className="w-3.5 h-3.5" />
+              <span>Room</span>
             </button>
           </div>
 
-          {/* Volume Slider */}
           <div className="space-y-1">
-            <div className="flex justify-between text-[11px] text-[#B9AB97]">
+            <div className="flex justify-between text-[10px] text-[#6B5D50] dark:text-[#B8AFA3]">
               <span>Volume</span>
               <span>{Math.round(volume * 100)}%</span>
             </div>
@@ -274,7 +267,7 @@ export default function AmbientSoundController({ className = "" }: { className?:
               step="0.05"
               value={volume}
               onChange={(e) => setVolume(parseFloat(e.target.value))}
-              className="w-full accent-[#E8AD62] h-1.5 bg-[#1A1512] rounded-lg cursor-pointer"
+              className="w-full accent-[#49372B] dark:accent-[#AC7256] h-1 bg-[#E5D6BE] dark:bg-[#383029] rounded cursor-pointer"
             />
           </div>
         </div>

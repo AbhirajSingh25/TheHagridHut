@@ -1,1214 +1,348 @@
-import {
-  useState,
-} from "react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { Eye, EyeOff, Lock, Mail, User, ArrowRight, CheckCircle2 } from "lucide-react";
+import { signup, login as loginApi } from "../services/api";
+import { useAuth } from "../context/AuthContext";
+import HagridsLogo from "../components/shared/HagridsLogo";
 
-import {
-  useNavigate,
-} from "react-router-dom";
+export default function Signup() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-import {
-  ArrowRight,
-  BrainCircuit,
-  Eye,
-  EyeOff,
-  Lock,
-  Mail,
-  ShieldCheck,
-  User,
-  BarChart3,
-  Sparkles,
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-  Moon,
-  Sun,
-} from "lucide-react";
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
 
-import {
-  useAuth,
-} from "../context/AuthContext";
-
-import "./Signup.css";
-
-
-const API_BASE_URL =
-  "http://127.0.0.1:8000";
-
-
-type SignupForm = {
-
-  username: string;
-
-  email: string;
-
-  password: string;
-
-  confirmPassword: string;
-
-};
-
-
-function Signup() {
-
-  const navigate =
-    useNavigate();
-
-
-  const {
-    login,
-  } = useAuth();
-
-
-  const [
-    loading,
-    setLoading,
-  ] = useState(false);
-
-
-  const [
-    showPassword,
-    setShowPassword,
-  ] = useState(false);
-
-
-  const [
-    showConfirmPassword,
-    setShowConfirmPassword,
-  ] = useState(false);
-
-
-  const [
-    error,
-    setError,
-  ] = useState("");
-
-
-  const [
-    success,
-    setSuccess,
-  ] = useState("");
-
-
-  const [
-    isLightMode,
-    setIsLightMode,
-  ] = useState(false);
-
-
-  const [
-    formData,
-    setFormData,
-  ] = useState<SignupForm>({
-
-    username:
-      "",
-
-    email:
-      "",
-
-    password:
-      "",
-
-    confirmPassword:
-      "",
-
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
-
-  function handleChange(
-    event:
-      React.ChangeEvent<HTMLInputElement>
-  ) {
-
-    const {
-      name,
-      value,
-    } = event.target;
-
-
-    setFormData(
-      previous => ({
-
-        ...previous,
-
-        [name]:
-          value,
-
-      })
-    );
-
-
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = event.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
     setError("");
-
-
-    setSuccess("");
-
   }
-
 
   function validateForm() {
-
-    const username =
-      formData.username.trim();
-
-
-    const email =
-      formData.email.trim();
-
+    const username = formData.username.trim();
+    const email = formData.email.trim();
 
     if (!username) {
-
-      setError(
-        "Please enter your full name."
-      );
-
+      setError("Please enter your name.");
       return false;
-
     }
-
-
     if (username.length < 2) {
-
-      setError(
-        "Your name must contain at least 2 characters."
-      );
-
+      setError("Your name must contain at least 2 characters.");
       return false;
-
     }
-
-
     if (!email) {
-
-      setError(
-        "Please enter your email address."
-      );
-
+      setError("Please enter your email address.");
       return false;
-
     }
-
-
-    const emailPattern =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-    if (
-      !emailPattern.test(
-        email
-      )
-    ) {
-
-      setError(
-        "Please enter a valid email address."
-      );
-
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setError("Please enter a valid email address.");
       return false;
-
     }
-
-
     if (!formData.password) {
-
-      setError(
-        "Please create a password."
-      );
-
+      setError("Please create a password.");
       return false;
-
     }
-
-
-    if (
-      formData.password.length < 6
-    ) {
-
-      setError(
-        "Password must contain at least 6 characters."
-      );
-
+    if (formData.password.length < 6) {
+      setError("Password must contain at least 6 characters.");
       return false;
-
     }
-
-
-    if (
-      formData.password
-      !==
-      formData.confirmPassword
-    ) {
-
-      setError(
-        "Passwords do not match."
-      );
-
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match.");
       return false;
-
     }
-
-
     return true;
-
   }
 
-
-  async function handleSubmit(
-    event:
-      React.FormEvent<HTMLFormElement>
-  ) {
-
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-
-    if (
-      !validateForm()
-    ) {
-
+    if (!validateForm()) {
       return;
-
     }
-
 
     setLoading(true);
-
-
     setError("");
 
-
-    setSuccess("");
-
-
     try {
+      const normalizedEmail = formData.email.trim().toLowerCase();
+      const username = formData.username.trim();
 
-      const response =
-        await fetch(
+      // Call centralized API helper
+      const data = await signup(username, normalizedEmail, formData.password);
 
-          `${API_BASE_URL}/auth/signup`,
+      let token = data?.token || data?.access_token;
+      let user = data?.user || {
+        id: data?.id || data?.user_id,
+        email: normalizedEmail,
+        username: username,
+      };
 
-          {
-
-            method:
-              "POST",
-
-            headers: {
-
-              "Content-Type":
-                "application/json",
-
-            },
-
-            body:
-              JSON.stringify({
-
-                username:
-                  formData
-                    .username
-                    .trim(),
-
-                email:
-                  formData
-                    .email
-                    .trim()
-                    .toLowerCase(),
-
-                password:
-                  formData.password,
-
-              }),
-
-          }
-
-        );
-
-
-      let data;
-
-
-      try {
-
-        data =
-          await response.json();
-
-      }
-
-      catch {
-
-        data = {};
-
-      }
-
-
-      if (!response.ok) {
-
-        throw new Error(
-
-          data.detail
-          ||
-          data.message
-          ||
-          "Unable to create your account."
-
-        );
-
-      }
-
-
-      const token =
-        data.token
-        ||
-        data.access_token;
-
-
-      const user =
-        data.user
-        ||
-        {
-
-          email:
-            formData
-              .email
-              .trim()
-              .toLowerCase(),
-
-        };
-
-
+      // If signup didn't return an access token directly, perform auto-login
       if (!token) {
-
-        throw new Error(
-          "Account created, but no authentication token was returned."
-        );
-
+        try {
+          const loginData = await loginApi(normalizedEmail, formData.password);
+          token = loginData?.token || loginData?.access_token;
+          user = loginData?.user || user;
+        } catch {
+          // If auto-login fails, redirect to login page
+          toast.success("Account created successfully! Please sign in.");
+          navigate("/login");
+          return;
+        }
       }
 
-
-      login(
-        user,
-        token
-      );
-
-
-      setSuccess(
-        "Account created successfully. Redirecting..."
-      );
-
-
-      setTimeout(
-
-        () => {
-
-          navigate(
-            "/dashboard",
-            {
-              replace:
-                true,
-            }
-          );
-
-        },
-
-        800
-
-      );
-
+      if (token) {
+        login(user, token);
+        toast.success("Welcome to Hagrid's Hut! Your desk is ready.");
+        navigate("/dashboard", { replace: true });
+      } else {
+        toast.success("Account created! Please sign in.");
+        navigate("/login");
+      }
+    } catch (err: any) {
+      console.error("Signup error:", err);
+      const msg =
+        err?.response?.data?.detail ||
+        err?.message ||
+        "Unable to create your account. Please check your information.";
+      setError(msg);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
     }
-
-    catch (
-      err:
-        unknown
-    ) {
-
-      const message =
-        err instanceof Error
-
-          ?
-
-          err.message
-
-          :
-
-          "Something went wrong while creating your account.";
-
-
-      setError(
-        message
-      );
-
-    }
-
-    finally {
-
-      setLoading(
-        false
-      );
-
-    }
-
   }
 
-
   return (
-
-    <div
-      className={
-        isLightMode
-
-          ?
-
-          "signup-page signup-light-mode"
-
-          :
-
-          "signup-page"
-      }
-    >
-
-
-      <div
-        className="signup-background-grid"
-      />
-
-
-      <div
-        className="signup-background-glow signup-glow-one"
-      />
-
-
-      <div
-        className="signup-background-glow signup-glow-two"
-      />
-
-
-      {/* =====================================================
-          HEADER
-      ====================================================== */}
-
-      <header
-        className="signup-header"
-      >
-
-        <button
-          type="button"
-          className="signup-brand"
-          onClick={
-            () =>
-              navigate(
-                "/login"
-              )
-          }
+    <div className="min-h-screen bg-[#F7F3EB] dark:bg-[#221D19] text-[#302820] dark:text-[#F3EADD] font-sans flex flex-col justify-between">
+      {/* Top Header */}
+      <header className="w-full px-6 py-5 max-w-7xl mx-auto flex items-center justify-between">
+        <HagridsLogo to="/" />
+        <Link
+          to="/"
+          className="text-xs font-medium text-[#6B5D50] dark:text-[#B8AFA3] hover:text-[#302820] dark:hover:text-[#FAF5EC] transition-colors"
         >
-
-          <div
-            className="signup-brand-icon"
-          >
-
-            <BrainCircuit
-              size={22}
-            />
-
-          </div>
-
-
-          <div
-            className="signup-brand-text"
-          >
-
-            <span>
-              Hagrid's Hut
-            </span>
-
-            <small>
-              BY THE SORTED CLUB
-            </small>
-
-          </div>
-
-        </button>
-
-
-        <div
-          className="signup-header-actions"
-        >
-
-          <button
-            type="button"
-            className="signup-theme-button"
-            onClick={
-              () =>
-                setIsLightMode(
-                  previous =>
-                    !previous
-                )
-            }
-          >
-
-            {isLightMode
-
-              ?
-
-              <Moon
-                size={16}
-              />
-
-              :
-
-              <Sun
-                size={16}
-              />
-
-            }
-
-
-            Switch to Modern UI
-
-          </button>
-
-
-          <button
-            type="button"
-            className="signup-header-login"
-            onClick={
-              () =>
-                navigate(
-                  "/login"
-                )
-            }
-          >
-
-            Sign In
-
-          </button>
-
-        </div>
-
+          ← Return to homepage
+        </Link>
       </header>
 
+      {/* Main Form */}
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 flex items-center justify-center">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          {/* Left Column: Visual Introduction */}
+          <div className="hidden lg:flex lg:col-span-6 flex-col justify-center space-y-6 pr-6">
+            <div className="relative rounded-xl overflow-hidden border border-[#49372B]/15 dark:border-[#E5D6BE]/15 shadow-md">
+              <img
+                src="/images/study_workspace_desk.jpg"
+                alt="A warm study desk with notebook and coffee"
+                className="w-full h-80 object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#2A231C]/90 via-[#2A231C]/30 to-transparent flex flex-col justify-end p-6 text-[#FAF5EC]">
+                <span className="font-hand text-2xl text-[#E5D6BE] mb-1">
+                  "Your next opportunity starts right here."
+                </span>
+                <p className="text-xs text-[#FAF5EC]/80">
+                  A personal corner of the world built for career readiness.
+                </p>
+              </div>
+            </div>
 
-      {/* =====================================================
-          MAIN CONTENT
-      ====================================================== */}
-
-      <main
-        className="signup-main"
-      >
-
-
-        {/* =================================================
-            LEFT SIDE
-        ================================================== */}
-
-        <section
-          className="signup-hero-section"
-        >
-
-          <div
-            className="signup-status-pill"
-          >
-
-            <Sparkles
-              size={14}
-            />
-
-            START YOUR CAREER INTELLIGENCE JOURNEY
-
+            <div className="space-y-2.5 text-sm text-[#6B5D50] dark:text-[#B8AFA3]">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#7A8065]" />
+                <span>Unlimited interview practice across roles and experience levels</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#7A8065]" />
+                <span>Resume PDF workshop with tailored suggestion notes</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#7A8065]" />
+                <span>Access to both Cozy Experience and Advanced Mode anytime</span>
+              </div>
+            </div>
           </div>
 
-
-          <h1>
-
-            Turn every
-            <br />
-
-            interview into
-
-            <span>
-              your advantage.
-            </span>
-
-          </h1>
-
-
-          <p>
-
-            Build your professional profile,
-            prepare with AI, analyze your performance,
-            and make smarter career decisions.
-
-          </p>
-
-
-          <div
-            className="signup-feature-cards"
-          >
-
-
-            <div
-              className="signup-feature-card"
-            >
-
-              <div
-                className="signup-feature-icon"
-              >
-
-                <BrainCircuit
-                  size={21}
-                />
-
-              </div>
-
-
-              <div>
-
-                <h3>
-                  AI Intelligence
-                </h3>
-
-
-                <p>
-                  Adaptive interview analysis.
+          {/* Right Column: Clean Registration Form */}
+          <div className="lg:col-span-6 max-w-md w-full mx-auto">
+            <div className="study-card p-8 sm:p-10 space-y-6">
+              <div className="space-y-1.5 text-left">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#AC7256]">
+                  A product of The Sorted Club
+                </span>
+                <h1 className="font-serif text-3xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                  Take a seat.
+                </h1>
+                <p className="text-sm text-[#6B5D50] dark:text-[#B8AFA3]">
+                  Create your personal study desk to begin preparing.
                 </p>
-
               </div>
-
-            </div>
-
-
-            <div
-              className="signup-feature-card"
-            >
-
-              <div
-                className="signup-feature-icon cyan"
-              >
-
-                <BarChart3
-                  size={21}
-                />
-
-              </div>
-
-
-              <div>
-
-                <h3>
-                  Analytics
-                </h3>
-
-
-                <p>
-                  Track your career growth.
-                </p>
-
-              </div>
-
-            </div>
-
-
-            <div
-              className="signup-feature-card"
-            >
-
-              <div
-                className="signup-feature-icon purple"
-              >
-
-                <ShieldCheck
-                  size={21}
-                />
-
-              </div>
-
-
-              <div>
-
-                <h3>
-                  Secure
-                </h3>
-
-
-                <p>
-                  Your data stays protected.
-                </p>
-
-              </div>
-
-            </div>
-
-
-          </div>
-
-        </section>
-
-
-        {/* =================================================
-            RIGHT SIDE
-        ================================================== */}
-
-        <section
-          className="signup-auth-section"
-        >
-
-          <div
-            className="signup-auth-card"
-          >
-
-
-            <div
-              className="signup-auth-heading"
-            >
-
-              <div
-                className="signup-heading-icon"
-              >
-
-                <User
-                  size={24}
-                />
-
-              </div>
-
-
-              <div>
-
-                <h2>
-                  Create your account
-                </h2>
-
-
-                <p>
-                  Start your Hagrid's Hut journey — a product of The Sorted Club.
-                </p>
-
-              </div>
-
-            </div>
-
-
-            {/* TABS */}
-
-            <div
-              className="signup-tabs"
-            >
-
-              <button
-                type="button"
-                className="signup-tab"
-                onClick={
-                  () =>
-                    navigate(
-                      "/login"
-                    )
-                }
-              >
-
-                Login
-
-              </button>
-
-
-              <button
-                type="button"
-                className="signup-tab signup-tab-active"
-              >
-
-                Sign Up
-
-              </button>
-
-            </div>
-
-
-            {/* FORM */}
-
-            <form
-              onSubmit={
-                handleSubmit
-              }
-              className="signup-form"
-            >
-
-
-              {/* FULL NAME */}
-
-              <div
-                className="signup-input-group"
-              >
-
-                <label
-                  htmlFor="username"
-                >
-                  Full Name
-                </label>
-
-
-                <div
-                  className="signup-input-wrapper"
-                >
-
-                  <User
-                    size={18}
-                  />
-
-
-                  <input
-                    id="username"
-                    type="text"
-                    name="username"
-                    placeholder="Enter your full name"
-                    value={
-                      formData.username
-                    }
-                    onChange={
-                      handleChange
-                    }
-                    autoComplete="name"
-                    disabled={
-                      loading
-                    }
-                  />
-
-                </div>
-
-              </div>
-
-
-              {/* EMAIL */}
-
-              <div
-                className="signup-input-group"
-              >
-
-                <label
-                  htmlFor="email"
-                >
-                  Email Address
-                </label>
-
-
-                <div
-                  className="signup-input-wrapper"
-                >
-
-                  <Mail
-                    size={18}
-                  />
-
-
-                  <input
-                    id="email"
-                    type="email"
-                    name="email"
-                    placeholder="you@example.com"
-                    value={
-                      formData.email
-                    }
-                    onChange={
-                      handleChange
-                    }
-                    autoComplete="email"
-                    disabled={
-                      loading
-                    }
-                  />
-
-                </div>
-
-              </div>
-
-
-              {/* PASSWORD */}
-
-              <div
-                className="signup-input-group"
-              >
-
-                <label
-                  htmlFor="password"
-                >
-                  Password
-                </label>
-
-
-                <div
-                  className="signup-input-wrapper"
-                >
-
-                  <Lock
-                    size={18}
-                  />
-
-
-                  <input
-                    id="password"
-                    type={
-                      showPassword
-
-                        ?
-
-                        "text"
-
-                        :
-
-                        "password"
-                    }
-                    name="password"
-                    placeholder="Create a password"
-                    value={
-                      formData.password
-                    }
-                    onChange={
-                      handleChange
-                    }
-                    autoComplete="new-password"
-                    disabled={
-                      loading
-                    }
-                  />
-
-
-                  <button
-                    type="button"
-                    className="signup-password-toggle"
-                    onClick={
-                      () =>
-                        setShowPassword(
-                          previous =>
-                            !previous
-                        )
-                    }
-                  >
-
-                    {showPassword
-
-                      ?
-
-                      <EyeOff
-                        size={18}
-                      />
-
-                      :
-
-                      <Eye
-                        size={18}
-                      />
-
-                    }
-
-                  </button>
-
-                </div>
-
-              </div>
-
-
-              {/* CONFIRM PASSWORD */}
-
-              <div
-                className="signup-input-group"
-              >
-
-                <label
-                  htmlFor="confirmPassword"
-                >
-                  Confirm Password
-                </label>
-
-
-                <div
-                  className="signup-input-wrapper"
-                >
-
-                  <Lock
-                    size={18}
-                  />
-
-
-                  <input
-                    id="confirmPassword"
-                    type={
-                      showConfirmPassword
-
-                        ?
-
-                        "text"
-
-                        :
-
-                        "password"
-                    }
-                    name="confirmPassword"
-                    placeholder="Confirm your password"
-                    value={
-                      formData.confirmPassword
-                    }
-                    onChange={
-                      handleChange
-                    }
-                    autoComplete="new-password"
-                    disabled={
-                      loading
-                    }
-                  />
-
-
-                  <button
-                    type="button"
-                    className="signup-password-toggle"
-                    onClick={
-                      () =>
-                        setShowConfirmPassword(
-                          previous =>
-                            !previous
-                        )
-                    }
-                  >
-
-                    {showConfirmPassword
-
-                      ?
-
-                      <EyeOff
-                        size={18}
-                      />
-
-                      :
-
-                      <Eye
-                        size={18}
-                      />
-
-                    }
-
-                  </button>
-
-                </div>
-
-              </div>
-
-
-              {/* ERROR */}
 
               {error && (
-
-                <div
-                  className="signup-message signup-error"
-                >
-
-                  <AlertCircle
-                    size={18}
-                  />
-
-
-                  <span>
-                    {error}
-                  </span>
-
+                <div className="p-3.5 rounded-md bg-[#AC5E50]/10 border border-[#AC5E50]/25 text-[#AC5E50] text-xs">
+                  {error}
                 </div>
-
               )}
 
-
-              {/* SUCCESS */}
-
-              {success && (
-
-                <div
-                  className="signup-message signup-success"
-                >
-
-                  <CheckCircle2
-                    size={18}
-                  />
-
-
-                  <span>
-                    {success}
-                  </span>
-
+              <form onSubmit={handleSubmit} className="space-y-4 text-left">
+                {/* Full Name */}
+                <div className="space-y-1">
+                  <label
+                    htmlFor="username"
+                    className="block text-xs font-medium text-[#49372B] dark:text-[#E5D6BE]"
+                  >
+                    Your name
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="username"
+                      name="username"
+                      type="text"
+                      value={formData.username}
+                      onChange={handleChange}
+                      placeholder="Eleanor Vance"
+                      required
+                      autoComplete="name"
+                      className="w-full px-3.5 py-2.5 rounded-md bg-[#FAF5EC] dark:bg-[#342C25] border border-[#49372B]/20 dark:border-[#E5D6BE]/20 text-[#302820] dark:text-[#FAF5EC] placeholder:text-[#9B8D7F] text-sm focus:border-[#AC7256] focus:ring-1 focus:ring-[#AC7256] outline-none transition-all"
+                    />
+                    <User className="w-4 h-4 text-[#9B8D7F] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
                 </div>
 
-              )}
-
-
-              {/* SUBMIT */}
-
-              <button
-                type="submit"
-                className="signup-submit-button"
-                disabled={
-                  loading
-                }
-              >
-
-                {loading
-
-                  ?
-
-                  <>
-
-                    <Loader2
-                      size={20}
-                      className="signup-spin"
+                {/* Email */}
+                <div className="space-y-1">
+                  <label
+                    htmlFor="email"
+                    className="block text-xs font-medium text-[#49372B] dark:text-[#E5D6BE]"
+                  >
+                    Email address
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="you@domain.com"
+                      required
+                      autoComplete="email"
+                      className="w-full px-3.5 py-2.5 rounded-md bg-[#FAF5EC] dark:bg-[#342C25] border border-[#49372B]/20 dark:border-[#E5D6BE]/20 text-[#302820] dark:text-[#FAF5EC] placeholder:text-[#9B8D7F] text-sm focus:border-[#AC7256] focus:ring-1 focus:ring-[#AC7256] outline-none transition-all"
                     />
+                    <Mail className="w-4 h-4 text-[#9B8D7F] absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  </div>
+                </div>
 
-                    Creating account...
-
-                  </>
-
-                  :
-
-                  <>
-
-                    Create Your Account
-
-                    <ArrowRight
-                      size={20}
+                {/* Password */}
+                <div className="space-y-1">
+                  <label
+                    htmlFor="password"
+                    className="block text-xs font-medium text-[#49372B] dark:text-[#E5D6BE]"
+                  >
+                    Password (min. 6 characters)
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Create a strong password"
+                      required
+                      autoComplete="new-password"
+                      className="w-full px-3.5 py-2.5 rounded-md bg-[#FAF5EC] dark:bg-[#342C25] border border-[#49372B]/20 dark:border-[#E5D6BE]/20 text-[#302820] dark:text-[#FAF5EC] placeholder:text-[#9B8D7F] text-sm focus:border-[#AC7256] focus:ring-1 focus:ring-[#AC7256] outline-none transition-all pr-10"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B8D7F] hover:text-[#302820] dark:hover:text-[#FAF5EC] p-1"
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
 
-                  </>
+                {/* Confirm Password */}
+                <div className="space-y-1">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-xs font-medium text-[#49372B] dark:text-[#E5D6BE]"
+                  >
+                    Confirm password
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="Repeat your password"
+                      required
+                      autoComplete="new-password"
+                      className="w-full px-3.5 py-2.5 rounded-md bg-[#FAF5EC] dark:bg-[#342C25] border border-[#49372B]/20 dark:border-[#E5D6BE]/20 text-[#302820] dark:text-[#FAF5EC] placeholder:text-[#9B8D7F] text-sm focus:border-[#AC7256] focus:ring-1 focus:ring-[#AC7256] outline-none transition-all pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9B8D7F] hover:text-[#302820] dark:hover:text-[#FAF5EC] p-1"
+                      aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
 
-                }
+                {/* Submit button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-primary w-full justify-center py-3 text-sm font-semibold disabled:opacity-60 mt-2"
+                >
+                  {loading ? (
+                    <span>Preparing your desk...</span>
+                  ) : (
+                    <>
+                      <span>Create your study account</span>
+                      <ArrowRight className="w-4 h-4 ml-1" />
+                    </>
+                  )}
+                </button>
+              </form>
 
-              </button>
-
-            </form>
-
-
-            <div
-              className="signup-bottom-text"
-            >
-
-              Already have an account?
-
-              <button
-                type="button"
-                onClick={
-                  () =>
-                    navigate(
-                      "/login"
-                    )
-                }
-              >
-
-                Sign in
-
-              </button>
-
+              <div className="pt-2 text-center text-xs text-[#6B5D50] dark:text-[#B8AFA3]">
+                Already have a desk here?{" "}
+                <Link
+                  to="/login"
+                  className="font-semibold text-[#AC7256] hover:underline ml-1"
+                >
+                  Sign in
+                </Link>
+              </div>
             </div>
-
-
           </div>
-
-        </section>
-
-
+        </div>
       </main>
 
+      {/* Footer */}
+      <footer className="w-full py-4 text-center text-[11px] text-[#9B8D7F]">
+        Hagrid's Hut · A product of <span className="text-[#AC7256] font-medium">The Sorted Club</span>
+      </footer>
     </div>
-
   );
-
 }
-
-
-export default Signup;

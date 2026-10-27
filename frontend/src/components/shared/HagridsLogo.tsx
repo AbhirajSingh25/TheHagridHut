@@ -1,63 +1,128 @@
 import { Link } from "react-router-dom";
 
 type HagridsLogoProps = {
-  variant?: "full" | "compact" | "minimal";
+  variant?: "full" | "compact" | "minimal" | "mark-only" | "stacked";
   className?: string;
   to?: string;
+  inverse?: boolean;
 };
+
+export function HagridsHutMark({
+  size = 36,
+  className = "",
+}: {
+  size?: number;
+  className?: string;
+}) {
+  return (
+    <div
+      style={{ width: size, height: size }}
+      className={`relative flex items-center justify-center shrink-0 rounded-lg bg-[#49372B] text-[#FAF5EC] shadow-sm transition-transform duration-200 group-hover:scale-[1.03] ${className}`}
+      aria-hidden="true"
+    >
+      <svg
+        viewBox="0 0 32 32"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-[72%] h-[72%]"
+      >
+        {/* Soft curly chimney smoke */}
+        <path
+          d="M21 7C20.5 5.5 22 4.5 21.5 3"
+          stroke="#E5D6BE"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity="0.85"
+        />
+
+        {/* Chimney */}
+        <path
+          d="M20 9V7H23V11"
+          stroke="#F3EADD"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Cottage Roofline (Gabled study roof) */}
+        <path
+          d="M5 14L16 6L27 14"
+          stroke="#F3EADD"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Cottage Walls */}
+        <path
+          d="M8 13.5V25C8 25.55 8.45 26 9 26H23C23.55 26 24 25.55 24 25V13.5"
+          stroke="#F3EADD"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Warm Lit Study Window with Muntins */}
+        <rect
+          x="12"
+          y="15"
+          width="8"
+          height="8"
+          rx="1"
+          fill="#FAF5EC"
+          fillOpacity="0.95"
+        />
+        <line
+          x1="16"
+          y1="15"
+          x2="16"
+          y2="23"
+          stroke="#49372B"
+          strokeWidth="1.2"
+        />
+        <line
+          x1="12"
+          y1="19"
+          x2="20"
+          y2="19"
+          stroke="#49372B"
+          strokeWidth="1.2"
+        />
+      </svg>
+    </div>
+  );
+}
 
 export default function HagridsLogo({
   variant = "full",
   className = "",
   to = "/",
+  inverse = false,
 }: HagridsLogoProps) {
   const content = (
-    <div className={`flex items-center gap-3 select-none group ${className}`}>
-      {/* Ambient Lantern Icon */}
-      <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-[#35251D] via-[#241B16] to-[#1A1512] border border-[#E8AD62]/30 shadow-md group-hover:border-[#E8AD62]/60 transition-all duration-300">
-        {/* Soft amber radial glow */}
-        <div className="absolute inset-0 rounded-xl bg-[#E8AD62]/10 blur-sm group-hover:bg-[#E8AD62]/20 transition-colors" />
+    <div className={`group flex items-center gap-3 select-none text-left ${className}`}>
+      <HagridsHutMark size={variant === "compact" ? 32 : 38} />
 
-        {/* Custom SVG Lantern */}
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="w-5 h-5 text-[#E8AD62] relative z-10 transition-transform duration-300 group-hover:scale-105"
-        >
-          {/* Lantern Top Loop */}
-          <circle cx="12" cy="3.5" r="1.5" stroke="#E8AD62" />
-          {/* Lantern Cap */}
-          <path d="M7 6h10l-1.5 2H8.5L7 6z" fill="#E8AD62" fillOpacity="0.4" stroke="#E8AD62" />
-          {/* Lantern Chamber */}
-          <path d="M8.5 8h7l1 8h-9l1-8z" stroke="#E8AD62" />
-          {/* Flame inside */}
-          <path
-            d="M12 10.5c-.8 1-1 1.8-.7 2.5.3.7 1 .9 1.4.9.4 0 1.1-.2 1.4-.9.3-.7.1-1.5-.7-2.5z"
-            fill="#FDE68A"
-            stroke="none"
-          />
-          {/* Base */}
-          <path d="M7.5 16h9l-.5 2h-8l-.5-2z" fill="#E8AD62" fillOpacity="0.4" stroke="#E8AD62" />
-        </svg>
-      </div>
-
-      {variant !== "minimal" && (
-        <div className="flex flex-col text-left leading-tight">
-          <div className="flex items-center gap-1.5">
-            <span className="font-display font-bold text-lg tracking-wide text-[#FFF7E9] group-hover:text-[#FDE68A] transition-colors">
+      {variant !== "mark-only" && variant !== "minimal" && (
+        <div className="flex flex-col leading-tight">
+          <div className="flex items-center gap-2">
+            <span
+              className={`font-serif text-lg tracking-tight font-semibold ${
+                inverse ? "text-[#FAF5EC]" : "text-[#302820]"
+              } group-hover:text-[#AC7256] transition-colors`}
+            >
               Hagrid's Hut
             </span>
-            <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded-full bg-[#536B4F]/30 text-[#80C8B5] border border-[#536B4F]/40 tracking-wider">
-              Hut
-            </span>
           </div>
-          {variant === "full" && (
-            <span className="text-[11px] font-medium tracking-normal text-[#B9AB97]/80">
-              a product of <span className="text-[#E8AD62] font-semibold">The Sorted Club</span>
+
+          {(variant === "full" || variant === "stacked") && (
+            <span
+              className={`text-[11px] font-sans tracking-normal ${
+                inverse ? "text-[#E5D6BE]/80" : "text-[#6B5D50]"
+              }`}
+            >
+              A product of <span className="font-medium text-[#AC7256]">The Sorted Club</span>
             </span>
           )}
         </div>
@@ -67,7 +132,7 @@ export default function HagridsLogo({
 
   if (to) {
     return (
-      <Link to={to} className="inline-block focus:outline-none">
+      <Link to={to} className="inline-block focus:outline-none" aria-label="Hagrid's Hut homepage">
         {content}
       </Link>
     );

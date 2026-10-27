@@ -654,54 +654,15 @@ function MainLayout({
 
 
     const accentClass =
-      item.accent === "cyan"
-        ? active
-          ? "text-cyan-300"
-          : "text-[var(--muted)] group-hover:text-cyan-300"
-        : item.accent === "emerald"
-          ? active
-            ? "text-emerald-300"
-            : "text-[var(--muted)] group-hover:text-emerald-300"
-          : active
-            ? "text-violet-300"
-            : "text-[var(--muted)] group-hover:text-violet-300";
-
+      active
+        ? "text-[#AC7256] dark:text-[#E5D6BE]"
+        : "text-[#6B5D50] dark:text-[#B8AFA3] group-hover:text-[#302820] dark:group-hover:text-[#FAF5EC]";
 
     const activeBackground =
-      item.accent === "cyan"
-        ? `
-          border-cyan-400/20
-          bg-cyan-400/[0.07]
-          shadow-[inset_0_0_20px_rgba(34,211,238,0.035)]
-        `
-        : item.accent === "emerald"
-          ? `
-            border-emerald-400/20
-            bg-emerald-400/[0.07]
-            shadow-[inset_0_0_20px_rgba(52,211,153,0.035)]
-          `
-          : `
-            border-violet-400/20
-            bg-violet-500/[0.11]
-            shadow-[inset_0_0_20px_rgba(139,92,246,0.045)]
-          `;
-
+      "border-[#49372B]/20 dark:border-[#E5D6BE]/20 bg-[#FAF5EC] dark:bg-[#342C25] shadow-sm";
 
     const indicatorColor =
-      item.accent === "cyan"
-        ? `
-          bg-cyan-400
-          shadow-[0_0_10px_rgba(34,211,238,0.8)]
-        `
-        : item.accent === "emerald"
-          ? `
-            bg-emerald-400
-            shadow-[0_0_10px_rgba(52,211,153,0.8)]
-          `
-          : `
-            bg-violet-400
-            shadow-[0_0_10px_rgba(167,139,250,0.8)]
-          `;
+      "bg-[#AC7256] dark:bg-[#E5D6BE]";
 
 
     return (
@@ -806,41 +767,34 @@ function MainLayout({
 
 
             {item.badge && (
-
               <span
                 className="
                   rounded-md
                   border
-                  border-violet-400/20
-                  bg-violet-400/10
+                  border-[#AC7256]/20
+                  bg-[#AC7256]/10
                   px-1.5
                   py-0.5
                   font-mono
-                  text-[8px]
-                  font-bold
+                  text-[9px]
+                  font-semibold
                   uppercase
                   tracking-wider
-                  text-violet-300
+                  text-[#AC7256]
                 "
               >
-
                 {item.badge}
-
               </span>
-
             )}
-
 
             {active &&
               !item.badge && (
-
                 <ChevronRight
                   size={13}
                   className="
-                    text-violet-300/60
+                    text-[#AC7256]
                   "
                 />
-
               )}
 
           </>

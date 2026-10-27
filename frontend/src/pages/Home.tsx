@@ -1,31 +1,25 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import {
-  Sparkles,
   BookOpen,
   Mic,
   FileText,
   BarChart3,
   ArrowRight,
   ShieldCheck,
-  Compass,
   CheckCircle2,
   Menu,
   X,
-  Volume2,
-  Terminal,
-  Cpu,
-  GraduationCap,
-  Award,
-  ChevronRight,
+  Compass,
   Layers,
-  HeartHandshake
+  Sparkles,
+  Coffee,
+  PenTool,
+  Clock,
 } from "lucide-react";
 import HagridsLogo from "../components/shared/HagridsLogo";
 import ExperienceToggle from "../components/shared/ExperienceToggle";
 import AmbientSoundController from "../components/shared/AmbientSoundController";
-import RainWindowEffect from "../components/shared/RainWindowEffect";
 import InstallAppModal from "../components/shared/InstallAppModal";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
@@ -36,7 +30,7 @@ export default function Home() {
   const { experience, setExperience } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [installModalOpen, setInstallModalOpen] = useState(false);
-  const [activeFeatureTab, setActiveFeatureTab] = useState<"interview" | "resume" | "speech" | "reports">("interview");
+  const [activeTab, setActiveTab] = useState<"interview" | "resume" | "reports">("interview");
 
   const isCozy = experience === "cozy";
 
@@ -57,342 +51,215 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen bg-[var(--bg)] text-[var(--text)] overflow-hidden flex flex-col font-sans-ui">
-      {/* Ambient Rain Window backdrop */}
-      <RainWindowEffect intensity="subtle" />
-
-      {/* Warm Ambient Overhead Light Halo */}
-      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[450px] bg-[radial-gradient(ellipse_at_top,rgba(232,173,98,0.14),transparent_70%)] blur-2xl z-0" />
-
+    <div className="min-h-screen bg-[#F7F3EB] dark:bg-[#221D19] text-[#302820] dark:text-[#F3EADD] font-sans transition-colors duration-200 flex flex-col">
       {/* =========================================================
-         PUBLIC NAVIGATION
+         RESTRAINED EDITORIAL HEADER
          ========================================================= */}
-      <header className="sticky top-0 z-40 w-full backdrop-blur-xl bg-[#1A1512]/85 border-b border-[#E8AD62]/15 transition-all">
+      <header className="sticky top-0 z-40 w-full bg-[#FAF5EC]/90 dark:bg-[#2A231C]/90 backdrop-blur-md border-b border-[#49372B]/10 dark:border-[#E5D6BE]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          {/* Logo & Parent Endorsement */}
+          {/* Logo with Cottage Mark & Parent Endorsement */}
           <HagridsLogo to="/" />
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium text-[#EFE4D2]">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-8 text-[15px] font-medium text-[#6B5D50] dark:text-[#B8AFA3]">
             <button
               onClick={() => scrollToSection("features")}
-              className="hover:text-[#E8AD62] transition-colors"
+              className="hover:text-[#302820] dark:hover:text-[#FAF5EC] transition-colors"
             >
-              Features
+              The Hut
             </button>
             <button
               onClick={() => scrollToSection("how-it-works")}
-              className="hover:text-[#E8AD62] transition-colors"
+              className="hover:text-[#302820] dark:hover:text-[#FAF5EC] transition-colors"
             >
               How It Works
             </button>
             <button
-              onClick={() => scrollToSection("experience-modes")}
-              className="hover:text-[#E8AD62] transition-colors"
+              onClick={() => scrollToSection("two-modes")}
+              className="hover:text-[#302820] dark:hover:text-[#FAF5EC] transition-colors"
             >
-              Two Modes
+              Two Experiences
             </button>
             <button
               onClick={() => scrollToSection("about-club")}
-              className="hover:text-[#E8AD62] transition-colors"
+              className="hover:text-[#302820] dark:hover:text-[#FAF5EC] transition-colors"
             >
-              The Sorted Club
+              About
             </button>
           </nav>
 
-          {/* Right Header Actions */}
-          <div className="hidden lg:flex items-center gap-3">
-            <ExperienceToggle variant="pill" />
+          {/* Desktop Right Actions: Discreet Ambience, Sign In, Primary CTA */}
+          <div className="hidden md:flex items-center gap-4">
             <AmbientSoundController />
 
             {user ? (
-              <Link
-                to="/dashboard"
-                className="ml-2 px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide uppercase bg-[#E8AD62] text-[#211B17] hover:bg-[#F6CD8B] shadow-md transition-all active:scale-95"
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="btn-primary"
               >
                 Go to Study Desk
-              </Link>
+                <ArrowRight className="w-4 h-4" />
+              </button>
             ) : (
-              <div className="flex items-center gap-3 ml-2">
+              <div className="flex items-center gap-4">
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-sm font-medium text-[#EFE4D2] hover:text-[#FFF7E9] transition-colors"
+                  className="text-sm font-medium text-[#6B5D50] dark:text-[#B8AFA3] hover:text-[#302820] dark:hover:text-[#FAF5EC] transition-colors"
                 >
                   Sign In
                 </Link>
-                <Link
-                  to="/signup"
-                  className="px-5 py-2.5 rounded-xl font-semibold text-xs tracking-wide uppercase bg-gradient-to-r from-[#E8AD62] to-[#D97706] text-[#211B17] hover:brightness-105 shadow-[0_0_25px_rgba(232,173,98,0.3)] transition-all active:scale-95"
+                <button
+                  onClick={handleEnterHut}
+                  className="btn-primary"
                 >
-                  Get Started
-                </Link>
+                  Enter the Hut
+                  <ArrowRight className="w-4 h-4" />
+                </button>
               </div>
             )}
           </div>
 
-          {/* Mobile Menu & Sound Controls */}
+          {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center gap-2">
             <AmbientSoundController />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="touch-target p-2 rounded-xl text-[#FFF7E9] hover:bg-[#2E231C] border border-[#E8AD62]/20"
-              aria-label="Toggle mobile menu"
+              className="touch-target p-2 rounded-md text-[#302820] dark:text-[#F3EADD] hover:bg-[#E5D6BE]/40 dark:hover:bg-[#342C25]"
+              aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Dropdown Drawer */}
+        {/* Mobile Accessible Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-b border-[#E8AD62]/20 bg-[#1A1512] px-5 py-6 space-y-4 shadow-2xl animate-fade-in">
-            <div className="flex items-center justify-between pb-3 border-b border-[#E8AD62]/10">
-              <span className="text-xs text-[#B9AB97]">Appearance</span>
-              <ExperienceToggle variant="compact" />
-            </div>
-
-            <nav className="flex flex-col space-y-3 text-base font-medium text-[#EFE4D2]">
+          <div className="md:hidden border-b border-[#49372B]/10 dark:border-[#E5D6BE]/10 bg-[#FAF5EC] dark:bg-[#2A231C] px-5 py-5 space-y-4 shadow-lg">
+            <nav className="flex flex-col space-y-3 text-base font-medium text-[#49372B] dark:text-[#F3EADD]">
               <button
                 onClick={() => scrollToSection("features")}
-                className="text-left py-2 hover:text-[#E8AD62]"
+                className="text-left py-2 hover:text-[#AC7256]"
               >
-                Features
+                The Hut
               </button>
               <button
                 onClick={() => scrollToSection("how-it-works")}
-                className="text-left py-2 hover:text-[#E8AD62]"
+                className="text-left py-2 hover:text-[#AC7256]"
               >
                 How It Works
               </button>
               <button
-                onClick={() => scrollToSection("experience-modes")}
-                className="text-left py-2 hover:text-[#E8AD62]"
+                onClick={() => scrollToSection("two-modes")}
+                className="text-left py-2 hover:text-[#AC7256]"
               >
-                Two Modes
+                Two Experiences
               </button>
               <button
                 onClick={() => scrollToSection("about-club")}
-                className="text-left py-2 hover:text-[#E8AD62]"
+                className="text-left py-2 hover:text-[#AC7256]"
               >
                 About The Sorted Club
               </button>
             </nav>
 
-            <div className="pt-4 border-t border-[#E8AD62]/10 space-y-3">
+            <div className="pt-3 border-t border-[#49372B]/10 dark:border-[#E5D6BE]/10 flex flex-col gap-2.5">
               {user ? (
-                <Link
-                  to="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full py-3 rounded-xl font-semibold text-center block bg-[#E8AD62] text-[#211B17]"
+                <button
+                  onClick={() => navigate("/dashboard")}
+                  className="btn-primary w-full justify-center"
                 >
                   Go to Study Desk
-                </Link>
+                </button>
               ) : (
                 <>
-                  <Link
-                    to="/signup"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-3 rounded-xl font-semibold text-center block bg-gradient-to-r from-[#E8AD62] to-[#D97706] text-[#211B17]"
+                  <button
+                    onClick={handleEnterHut}
+                    className="btn-primary w-full justify-center"
                   >
-                    Enter the Hut (Get Started)
-                  </Link>
+                    Enter the Hut
+                  </button>
                   <Link
                     to="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-2.5 rounded-xl font-medium text-center block text-[#B9AB97] border border-[#E8AD62]/20"
+                    className="btn-secondary w-full justify-center text-center"
                   >
                     Sign In
                   </Link>
                 </>
               )}
-
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  setInstallModalOpen(true);
-                }}
-                className="w-full py-2 text-xs text-[#E8AD62] flex items-center justify-center gap-1.5"
-              >
-                Install Hagrid's Hut App
-              </button>
             </div>
           </div>
         )}
       </header>
 
       {/* =========================================================
-         HERO SECTION: THE WARM STUDY
+         HERO SECTION: THE RAINLIT STUDY
          ========================================================= */}
-      <section className="relative pt-12 pb-20 md:pt-20 md:pb-32 px-4 sm:px-6 lg:px-8 z-10">
-        <div className="max-w-5xl mx-auto text-center space-y-8">
-          {/* Brand Welcome Pill */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#2E231C]/90 border border-[#E8AD62]/35 shadow-inner text-xs sm:text-sm font-medium text-[#F6CD8B]"
-          >
-            <Sparkles className="w-4 h-4 text-[#E8AD62]" />
-            <span>A warm sanctuary for interview practice & career readiness</span>
-          </motion.div>
-
-          {/* Main Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="font-display text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-[#FFF7E9] leading-[1.12]"
-          >
-            Build a career <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#F6CD8B] via-[#E8AD62] to-[#D97706] italic">
-              you're ready for.
-            </span>
-          </motion.h1>
-
-          {/* Supporting Copy */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="max-w-2xl mx-auto text-base sm:text-lg text-[#EFE4D2]/90 leading-relaxed font-study"
-          >
-            Practise interviews, improve your resume, understand your strengths, and take your next career step from a space that feels like yours.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
-          >
-            <button
-              onClick={handleEnterHut}
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl font-semibold text-base tracking-wide bg-gradient-to-r from-[#E8AD62] via-[#E8AD62] to-[#D97706] text-[#211B17] hover:brightness-105 shadow-[0_0_40px_rgba(232,173,98,0.35)] transition-all flex items-center justify-center gap-3 active:scale-98"
-            >
-              <span>Enter the Hut</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-
-            <button
-              onClick={() => scrollToSection("interactive-desk")}
-              className="w-full sm:w-auto px-7 py-4 rounded-2xl font-medium text-base text-[#FFF7E9] bg-[#2E231C]/80 hover:bg-[#35251D] border border-[#E8AD62]/25 hover:border-[#E8AD62]/50 transition-all flex items-center justify-center gap-2"
-            >
-              <BookOpen className="w-4 h-4 text-[#E8AD62]" />
-              <span>Explore the Experience</span>
-            </button>
-          </motion.div>
-
-          {/* Subtle Tagline Endorsement */}
-          <p className="text-xs text-[#B9AB97] pt-2">
-            "Your corner of the world to get career-ready." — A product of <span className="text-[#E8AD62]">The Sorted Club</span>
-          </p>
-        </div>
-
-        {/* =========================================================
-           INTERACTIVE DESK PREVIEW (The Open Notebook Motif)
-           ========================================================= */}
-        <div id="interactive-desk" className="max-w-5xl mx-auto mt-14 relative">
-          <div className="relative rounded-3xl p-1 bg-gradient-to-b from-[#E8AD62]/30 via-[#35251D]/60 to-[#241B16] shadow-2xl overflow-hidden">
-            <div className="bg-[#1F1713] rounded-[22px] p-6 sm:p-10 border border-[#E8AD62]/15">
-              {/* Desk Top Bar */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#E8AD62]/15">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-[#E8AD62] animate-pulse" />
-                  <span className="font-display font-semibold text-sm text-[#FFF7E9]">
-                    The Study Desk · Active Practice Session
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs px-3 py-1 rounded-full bg-[#536B4F]/30 text-[#80C8B5] border border-[#536B4F]/40">
-                    Groq AI Intelligence
-                  </span>
-                  <span className="text-xs px-3 py-1 rounded-full bg-[#E8AD62]/20 text-[#F6CD8B] border border-[#E8AD62]/30">
-                    Cozy Study Vibe
-                  </span>
-                </div>
+      <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-28 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
+            {/* Editorial Left Column */}
+            <div className="lg:col-span-6 space-y-6 text-left">
+              {/* Restrained Subtitle / Endorsement */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5D6BE]/60 dark:bg-[#383029] text-xs font-medium text-[#49372B] dark:text-[#E5D6BE] border border-[#49372B]/10 dark:border-[#E5D6BE]/10">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#AC7256]" />
+                The Rainlit Study · A product of The Sorted Club
               </div>
 
-              {/* Inside Desk: Notebook Layout */}
-              <div className="grid md:grid-cols-12 gap-8 mt-8">
-                {/* Left Page: Open Question & Speech Prompt */}
-                <div className="md:col-span-7 space-y-5 text-left">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-[#35251D] border border-[#E8AD62]/20 text-xs text-[#E8AD62]">
-                    <Mic className="w-3.5 h-3.5" />
-                    <span>Interview Question 03 of 05</span>
+              {/* Main Headline in Fraunces Serif */}
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight text-[#302820] dark:text-[#FAF5EC] leading-[1.12]">
+                Make room for your next chapter.
+              </h1>
+
+              {/* Supportive Editorial Body */}
+              <p className="text-lg sm:text-xl text-[#6B5D50] dark:text-[#B8AFA3] leading-relaxed max-w-xl font-normal">
+                Prepare for interviews, refine your resume, and build confidence at your own pace.
+                Your next career step starts here, in a space that lets you breathe.
+              </p>
+
+              {/* Primary & Secondary Actions */}
+              <div className="pt-2 flex flex-wrap items-center gap-4">
+                <button
+                  onClick={handleEnterHut}
+                  className="btn-primary text-base px-6 py-3"
+                >
+                  Enter the Hut
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </button>
+
+                <button
+                  onClick={() => scrollToSection("features")}
+                  className="btn-secondary text-base px-5 py-3"
+                >
+                  Take a look around
+                </button>
+              </div>
+
+              {/* Marginal Human Note */}
+              <div className="pt-4 flex items-center gap-3">
+                <span className="font-hand text-xl text-[#AC7256]">
+                  "Take your time. A good room makes all the difference."
+                </span>
+                <span className="text-xs text-[#9B8D7F]">— Notes from the Hut</span>
+              </div>
+            </div>
+
+            {/* Editorial Photographic Composition (Right Column) */}
+            <div className="lg:col-span-6 relative">
+              <div className="relative rounded-xl overflow-hidden shadow-lg border border-[#49372B]/15 dark:border-[#E5D6BE]/15 bg-[#E5D6BE]/30">
+                <img
+                  src="/images/rainlit_study_hero.jpg"
+                  alt="A warm wooden desk beside a rain-streaked window with an amber reading lamp, an open notebook, and books"
+                  className="w-full h-auto object-cover max-h-[500px]"
+                  loading="eager"
+                />
+
+                {/* Quiet caption bar */}
+                <div className="px-4 py-2.5 bg-[#FAF5EC]/95 dark:bg-[#2A231C]/95 border-t border-[#49372B]/10 dark:border-[#E5D6BE]/10 flex items-center justify-between text-xs text-[#6B5D50] dark:text-[#B8AFA3]">
+                  <div className="flex items-center gap-2">
+                    <Coffee className="w-3.5 h-3.5 text-[#AC7256]" />
+                    <span>The Rainlit Study — A quiet place to think</span>
                   </div>
-
-                  <h3 className="font-display text-xl sm:text-2xl font-bold text-[#FFF7E9] leading-snug">
-                    "Tell me about a time when you had to balance competing technical priorities under tight deadlines."
-                  </h3>
-
-                  <p className="text-sm text-[#EFE4D2]/80 leading-relaxed font-study">
-                    The interviewer is listening for structured STAR thinking (Situation, Task, Action, Result), prioritization frameworks, and honest reflection.
-                  </p>
-
-                  {/* Simulated Response Box */}
-                  <div className="p-4 rounded-2xl bg-[#1A1512] border border-[#E8AD62]/20 space-y-3">
-                    <div className="flex items-center justify-between text-xs text-[#B9AB97]">
-                      <span className="flex items-center gap-1.5 text-[#80C8B5]">
-                        <span className="w-2 h-2 rounded-full bg-[#80C8B5] animate-ping" />
-                        Speech Ready
-                      </span>
-                      <span>Text or Voice Answer</span>
-                    </div>
-                    <p className="text-sm text-[#FFF7E9] italic font-study">
-                      "In my previous role, our team faced a severe production bottleneck while simultaneously preparing for a major product launch..."
-                    </p>
-                  </div>
-                </div>
-
-                {/* Right Page: Real-time AI Evaluation Notebook */}
-                <div className="md:col-span-5 flex flex-col justify-between p-5 rounded-2xl bg-[#2E231C]/90 border border-[#E8AD62]/25 text-left space-y-4">
-                  <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-semibold uppercase tracking-wider text-[#E8AD62]">
-                        Study Feedback
-                      </span>
-                      <span className="text-xs font-bold text-[#80C8B5] px-2 py-0.5 rounded-full bg-[#536B4F]/30">
-                        Strong Signal
-                      </span>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <div className="flex justify-between text-xs text-[#EFE4D2] mb-1">
-                          <span>Structure (STAR Clarity)</span>
-                          <span className="text-[#E8AD62] font-semibold">92%</span>
-                        </div>
-                        <div className="w-full h-1.5 rounded-full bg-[#1A1512] overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-[#536B4F] to-[#E8AD62] w-[92%]" />
-                        </div>
-                      </div>
-
-                      <div>
-                        <div className="flex justify-between text-xs text-[#EFE4D2] mb-1">
-                          <span>Technical Depth</span>
-                          <span className="text-[#E8AD62] font-semibold">88%</span>
-                        </div>
-                        <div className="w-full h-1.5 rounded-full bg-[#1A1512] overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-[#536B4F] to-[#E8AD62] w-[88%]" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-3 rounded-xl bg-[#1A1512]/80 border border-[#E8AD62]/15 text-xs text-[#B9AB97] space-y-1">
-                    <span className="font-semibold text-[#FFF7E9] block">Follow-up Generated:</span>
-                    <p className="italic text-[#EFE4D2]/90">
-                      "How did you validate that your architectural trade-offs did not compromise system security?"
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={handleEnterHut}
-                    className="w-full py-2.5 rounded-xl font-semibold text-xs tracking-wider uppercase bg-[#E8AD62] text-[#211B17] hover:bg-[#F6CD8B] transition-colors"
-                  >
-                    Try Live in the Hut
-                  </button>
+                  <span className="font-mono text-[11px] text-[#9B8D7F]">Rainfall & Amber Light</span>
                 </div>
               </div>
             </div>
@@ -401,190 +268,132 @@ export default function Home() {
       </section>
 
       {/* =========================================================
-         FEATURE DISCOVERY
+         PHILOSOPHY CALLOUT
          ========================================================= */}
-      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#E8AD62]">
-            What You Can Do
-          </span>
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#FFF7E9]">
-            Everything you need to master your career journey.
-          </h2>
-          <p className="text-base text-[#EFE4D2]/80 font-study">
-            Built on genuine Groq AI models, robust resume parsing, speech analysis, and comprehensive session history.
+      <section className="py-14 bg-[#F0E9DC] dark:bg-[#2A231C] border-y border-[#49372B]/10 dark:border-[#E5D6BE]/10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
+          <p className="font-serif text-2xl sm:text-3xl font-medium text-[#302820] dark:text-[#FAF5EC] leading-snug">
+            Most career tools feel like an assessment under cold fluorescent lights.
+            Hagrid's Hut is designed like an inviting study on a rainy evening — safe, familiar, and unhurried.
           </p>
+          <p className="text-base text-[#6B5D50] dark:text-[#B8AFA3]">
+            Work with genuine AI evaluation, practice real interview questions, and build lasting career confidence.
+          </p>
+        </div>
+      </section>
 
-          {/* Interactive Feature Tabs */}
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-6">
-            <button
-              onClick={() => setActiveFeatureTab("interview")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                activeFeatureTab === "interview"
-                  ? "bg-[#E8AD62] text-[#211B17] shadow-md"
-                  : "bg-[#241B16] text-[#B9AB97] hover:text-[#FFF7E9] border border-[#E8AD62]/15"
-              }`}
-            >
-              Interview Practice
-            </button>
-            <button
-              onClick={() => setActiveFeatureTab("resume")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                activeFeatureTab === "resume"
-                  ? "bg-[#E8AD62] text-[#211B17] shadow-md"
-                  : "bg-[#241B16] text-[#B9AB97] hover:text-[#FFF7E9] border border-[#E8AD62]/15"
-              }`}
-            >
-              Resume Workshop
-            </button>
-            <button
-              onClick={() => setActiveFeatureTab("speech")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                activeFeatureTab === "speech"
-                  ? "bg-[#E8AD62] text-[#211B17] shadow-md"
-                  : "bg-[#241B16] text-[#B9AB97] hover:text-[#FFF7E9] border border-[#E8AD62]/15"
-              }`}
-            >
-              Speech Intelligence
-            </button>
-            <button
-              onClick={() => setActiveFeatureTab("reports")}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                activeFeatureTab === "reports"
-                  ? "bg-[#E8AD62] text-[#211B17] shadow-md"
-                  : "bg-[#241B16] text-[#B9AB97] hover:text-[#FFF7E9] border border-[#E8AD62]/15"
-              }`}
-            >
-              Reports & Progress
-            </button>
+      {/* =========================================================
+         PRODUCT DISCOVERY: REAL WORKING TOOLS
+         ========================================================= */}
+      <section id="features" className="py-20 lg:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+          <span className="text-xs uppercase font-semibold tracking-wider text-[#AC7256]">
+            Everyday Study Tools
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+            Tools built for focus, not anxiety.
+          </h2>
+          <p className="text-[#6B5D50] dark:text-[#B8AFA3] text-base">
+            Every feature is designed to feel like sitting down at your desk with a cup of coffee and making real progress.
+          </p>
+        </div>
+
+        {/* Feature Grid with Tactile Study Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Feature 1: Resume Workshop */}
+          <div className="study-card p-7 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-10 h-10 rounded-md bg-[#AC7256]/15 text-[#AC7256] flex items-center justify-center">
+                <FileText className="w-5 h-5" />
+              </div>
+              <h3 className="font-serif text-xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Resume Workshop
+              </h3>
+              <p className="text-[#6B5D50] dark:text-[#B8AFA3] text-sm leading-relaxed">
+                Refine your resume in a warm document reading sheet. Upload your PDF or text, analyze clarity and strengths, and review targeted improvement suggestions.
+              </p>
+            </div>
+            <div className="pt-6 mt-6 border-t border-[#49372B]/10 dark:border-[#E5D6BE]/10 flex items-center justify-between text-xs text-[#AC7256] font-medium">
+              <span>PDF analysis & ATS scoring</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
+          </div>
+
+          {/* Feature 2: Interview Practice */}
+          <div className="study-card p-7 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-10 h-10 rounded-md bg-[#7A8065]/15 text-[#7A8065] flex items-center justify-center">
+                <Mic className="w-5 h-5" />
+              </div>
+              <h3 className="font-serif text-xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Interview Practice
+              </h3>
+              <p className="text-[#6B5D50] dark:text-[#B8AFA3] text-sm leading-relaxed">
+                Practise job interviews in a low-distraction room. Generate realistic questions for your target role, record spoken or typed answers, and receive nuanced follow-ups.
+              </p>
+            </div>
+            <div className="pt-6 mt-6 border-t border-[#49372B]/10 dark:border-[#E5D6BE]/10 flex items-center justify-between text-xs text-[#7A8065] font-medium">
+              <span>Live audio & camera controls</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
+          </div>
+
+          {/* Feature 3: Answer Feedback & Reports */}
+          <div className="study-card p-7 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="w-10 h-10 rounded-md bg-[#B39460]/20 text-[#B39460] flex items-center justify-center">
+                <BarChart3 className="w-5 h-5" />
+              </div>
+              <h3 className="font-serif text-xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Personal Reports
+              </h3>
+              <p className="text-[#6B5D50] dark:text-[#B8AFA3] text-sm leading-relaxed">
+                Clear, readable evaluations that look like notes left in your journal. Understand what worked, what to polish, and concrete suggestions for your next attempt.
+              </p>
+            </div>
+            <div className="pt-6 mt-6 border-t border-[#49372B]/10 dark:border-[#E5D6BE]/10 flex items-center justify-between text-xs text-[#B39460] font-medium">
+              <span>Answer breakdowns & export</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </div>
           </div>
         </div>
 
-        {/* Feature Cards Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Card 1: Interview Room */}
-          <div className="p-8 rounded-3xl bg-[#241B16]/90 border border-[#E8AD62]/20 hover:border-[#E8AD62]/50 shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#E8AD62]/15 border border-[#E8AD62]/30 flex items-center justify-center text-[#E8AD62]">
-              <Mic className="w-6 h-6" />
+        {/* Real Product Workspace Preview Showcase */}
+        <div className="mt-16 study-card p-6 sm:p-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-5 space-y-5 text-left">
+              <span className="font-hand text-xl text-[#AC7256]">A desk you want to return to</span>
+              <h3 className="font-serif text-2xl sm:text-3xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Your personal study desk, always ready.
+              </h3>
+              <p className="text-sm text-[#6B5D50] dark:text-[#B8AFA3] leading-relaxed">
+                Log in and pick up right where you left off. Review your recent interview attempts, refine draft answers, inspect keyword matches for job descriptions, and see your progress accumulate.
+              </p>
+              <div className="space-y-2.5 pt-2">
+                <div className="flex items-center gap-2.5 text-sm text-[#49372B] dark:text-[#E5D6BE]">
+                  <CheckCircle2 className="w-4 h-4 text-[#7A8065]" />
+                  <span>Resume PDF parsing and tailored suggestion notes</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-sm text-[#49372B] dark:text-[#E5D6BE]">
+                  <CheckCircle2 className="w-4 h-4 text-[#7A8065]" />
+                  <span>Real audio capture and transcript evaluation</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-sm text-[#49372B] dark:text-[#E5D6BE]">
+                  <CheckCircle2 className="w-4 h-4 text-[#7A8065]" />
+                  <span>Historical report records preserved securely</span>
+                </div>
+              </div>
             </div>
-            <h3 className="font-display text-xl font-bold text-[#FFF7E9]">
-              Interview Practice Room
-            </h3>
-            <p className="text-sm text-[#EFE4D2]/80 leading-relaxed font-study">
-              Choose your target role, difficulty, and company style. Practice answering real questions with instant feedback and intelligent follow-ups.
-            </p>
-            <div className="pt-2">
-              <Link
-                to="/practice"
-                className="text-xs font-semibold text-[#E8AD62] hover:text-[#F6CD8B] inline-flex items-center gap-1.5"
-              >
-                Enter Practice Room <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
 
-          {/* Card 2: Resume Workshop */}
-          <div className="p-8 rounded-3xl bg-[#241B16]/90 border border-[#E8AD62]/20 hover:border-[#E8AD62]/50 shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#536B4F]/20 border border-[#536B4F]/40 flex items-center justify-center text-[#80C8B5]">
-              <FileText className="w-6 h-6" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-[#FFF7E9]">
-              AI Resume Workshop
-            </h3>
-            <p className="text-sm text-[#EFE4D2]/80 leading-relaxed font-study">
-              Upload your resume for real-time ATS scoring, keyword extraction, structural feedback, and job description alignment.
-            </p>
-            <div className="pt-2">
-              <Link
-                to="/resume"
-                className="text-xs font-semibold text-[#80C8B5] hover:text-[#FFF7E9] inline-flex items-center gap-1.5"
-              >
-                Upload & Analyze Resume <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card 3: In-Depth Reports */}
-          <div className="p-8 rounded-3xl bg-[#241B16]/90 border border-[#E8AD62]/20 hover:border-[#E8AD62]/50 shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#E8AD62]/15 border border-[#E8AD62]/30 flex items-center justify-center text-[#E8AD62]">
-              <BarChart3 className="w-6 h-6" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-[#FFF7E9]">
-              Comprehensive Reports
-            </h3>
-            <p className="text-sm text-[#EFE4D2]/80 leading-relaxed font-study">
-              Review every completed session. Identify your strongest communication habits, recurring patterns, and exportable PDF summaries.
-            </p>
-            <div className="pt-2">
-              <Link
-                to="/reports"
-                className="text-xs font-semibold text-[#E8AD62] hover:text-[#F6CD8B] inline-flex items-center gap-1.5"
-              >
-                View Report Overview <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card 4: Speech & Voice Intelligence */}
-          <div className="p-8 rounded-3xl bg-[#241B16]/90 border border-[#E8AD62]/20 hover:border-[#E8AD62]/50 shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#536B4F]/20 border border-[#536B4F]/40 flex items-center justify-center text-[#80C8B5]">
-              <Volume2 className="w-6 h-6" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-[#FFF7E9]">
-              Speech & Tone Analysis
-            </h3>
-            <p className="text-sm text-[#EFE4D2]/80 leading-relaxed font-study">
-              Understand pacing, clarity, confidence, and articulation without harsh judgment or robotic scoring.
-            </p>
-            <div className="pt-2">
-              <Link
-                to="/speech"
-                className="text-xs font-semibold text-[#80C8B5] hover:text-[#FFF7E9] inline-flex items-center gap-1.5"
-              >
-                Explore Speech Insights <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card 5: Recruiter Insights */}
-          <div className="p-8 rounded-3xl bg-[#241B16]/90 border border-[#E8AD62]/20 hover:border-[#E8AD62]/50 shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#E8AD62]/15 border border-[#E8AD62]/30 flex items-center justify-center text-[#E8AD62]">
-              <GraduationCap className="w-6 h-6" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-[#FFF7E9]">
-              Recruiter Perspective
-            </h3>
-            <p className="text-sm text-[#EFE4D2]/80 leading-relaxed font-study">
-              See what hiring managers and talent evaluators look for in candidates applying to top engineering, product, and leadership roles.
-            </p>
-            <div className="pt-2">
-              <Link
-                to="/recruiter"
-                className="text-xs font-semibold text-[#E8AD62] hover:text-[#F6CD8B] inline-flex items-center gap-1.5"
-              >
-                Inspect Hiring Signals <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Card 6: Streaks & Certificates */}
-          <div className="p-8 rounded-3xl bg-[#241B16]/90 border border-[#E8AD62]/20 hover:border-[#E8AD62]/50 shadow-xl transition-all duration-300 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#536B4F]/20 border border-[#536B4F]/40 flex items-center justify-center text-[#80C8B5]">
-              <Award className="w-6 h-6" />
-            </div>
-            <h3 className="font-display text-xl font-bold text-[#FFF7E9]">
-              Achievements & Readiness
-            </h3>
-            <p className="text-sm text-[#EFE4D2]/80 leading-relaxed font-study">
-              Earn verified readiness certificates and track weekly practice consistency to build quiet, unshakeable interview confidence.
-            </p>
-            <div className="pt-2">
-              <Link
-                to="/certificate"
-                className="text-xs font-semibold text-[#80C8B5] hover:text-[#FFF7E9] inline-flex items-center gap-1.5"
-              >
-                View Certificates <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
+            <div className="lg:col-span-7">
+              <div className="relative rounded-lg overflow-hidden border border-[#49372B]/15 dark:border-[#E5D6BE]/15 shadow-md">
+                <img
+                  src="/images/study_workspace_desk.jpg"
+                  alt="A wooden study desk with a resume document, glasses, fountain pen, and warm coffee cup"
+                  className="w-full h-auto object-cover max-h-[420px]"
+                  loading="lazy"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -593,293 +402,196 @@ export default function Home() {
       {/* =========================================================
          HOW IT WORKS
          ========================================================= */}
-      <section id="how-it-works" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 border-t border-[#E8AD62]/15">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#E8AD62]">
-            Simple, Calm Process
-          </span>
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#FFF7E9]">
-            How Hagrid's Hut works.
-          </h2>
-          <p className="text-base text-[#EFE4D2]/80 font-study">
-            No endless quizzes or corporate hurdles. Just genuine preparation tailored to your real career goals.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-5 gap-6 text-left">
-          {/* Step 1 */}
-          <div className="p-6 rounded-2xl bg-[#241B16] border border-[#E8AD62]/20 space-y-3">
-            <span className="w-8 h-8 rounded-full bg-[#E8AD62] text-[#211B17] font-bold text-sm flex items-center justify-center">
-              1
+      <section id="how-it-works" className="py-20 bg-[#F0E9DC] dark:bg-[#2A231C] border-y border-[#49372B]/10 dark:border-[#E5D6BE]/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+            <span className="text-xs uppercase font-semibold tracking-wider text-[#AC7256]">
+              Simple Rhythm
             </span>
-            <h4 className="font-display font-bold text-base text-[#FFF7E9]">Set Up Profile</h4>
-            <p className="text-xs text-[#B9AB97] font-study leading-relaxed">
-              Define your target job title, experience level, and preferred interview formats.
+            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+              How you work in the Hut.
+            </h2>
+            <p className="text-[#6B5D50] dark:text-[#B8AFA3] text-base">
+              A calm four-step cycle that turns interview nerves into steady preparation.
             </p>
           </div>
 
-          {/* Step 2 */}
-          <div className="p-6 rounded-2xl bg-[#241B16] border border-[#E8AD62]/20 space-y-3">
-            <span className="w-8 h-8 rounded-full bg-[#E8AD62] text-[#211B17] font-bold text-sm flex items-center justify-center">
-              2
-            </span>
-            <h4 className="font-display font-bold text-base text-[#FFF7E9]">Choose a Task</h4>
-            <p className="text-xs text-[#B9AB97] font-study leading-relaxed">
-              Pick between a mock interview session, resume critique, or speech practice exercise.
-            </p>
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="bg-[#FAF5EC] dark:bg-[#342C25] p-6 rounded-lg border border-[#49372B]/10 dark:border-[#E5D6BE]/10 space-y-3">
+              <span className="font-serif text-2xl font-bold text-[#AC7256]">01</span>
+              <h3 className="font-serif text-lg font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Set Your Goal
+              </h3>
+              <p className="text-xs text-[#6B5D50] dark:text-[#B8AFA3] leading-relaxed">
+                Choose the role, industry, or specific company you are targeting.
+              </p>
+            </div>
 
-          {/* Step 3 */}
-          <div className="p-6 rounded-2xl bg-[#241B16] border border-[#E8AD62]/20 space-y-3">
-            <span className="w-8 h-8 rounded-full bg-[#E8AD62] text-[#211B17] font-bold text-sm flex items-center justify-center">
-              3
-            </span>
-            <h4 className="font-display font-bold text-base text-[#FFF7E9]">Practise Comfortably</h4>
-            <p className="text-xs text-[#B9AB97] font-study leading-relaxed">
-              Answer by voice or keyboard in a serene, distraction-free atmosphere.
-            </p>
-          </div>
+            <div className="bg-[#FAF5EC] dark:bg-[#342C25] p-6 rounded-lg border border-[#49372B]/10 dark:border-[#E5D6BE]/10 space-y-3">
+              <span className="font-serif text-2xl font-bold text-[#AC7256]">02</span>
+              <h3 className="font-serif text-lg font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Pick Your Task
+              </h3>
+              <p className="text-xs text-[#6B5D50] dark:text-[#B8AFA3] leading-relaxed">
+                Work through a practice interview question or polish your resume document.
+              </p>
+            </div>
 
-          {/* Step 4 */}
-          <div className="p-6 rounded-2xl bg-[#241B16] border border-[#E8AD62]/20 space-y-3">
-            <span className="w-8 h-8 rounded-full bg-[#E8AD62] text-[#211B17] font-bold text-sm flex items-center justify-center">
-              4
-            </span>
-            <h4 className="font-display font-bold text-base text-[#FFF7E9]">Receive Feedback</h4>
-            <p className="text-xs text-[#B9AB97] font-study leading-relaxed">
-              Get detailed STAR analysis, follow-up challenges, and specific wording upgrades.
-            </p>
-          </div>
+            <div className="bg-[#FAF5EC] dark:bg-[#342C25] p-6 rounded-lg border border-[#49372B]/10 dark:border-[#E5D6BE]/10 space-y-3">
+              <span className="font-serif text-2xl font-bold text-[#AC7256]">03</span>
+              <h3 className="font-serif text-lg font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Receive Feedback
+              </h3>
+              <p className="text-xs text-[#6B5D50] dark:text-[#B8AFA3] leading-relaxed">
+                Get thoughtful, private feedback that highlights your strengths and areas to tighten.
+              </p>
+            </div>
 
-          {/* Step 5 */}
-          <div className="p-6 rounded-2xl bg-[#241B16] border border-[#E8AD62]/20 space-y-3">
-            <span className="w-8 h-8 rounded-full bg-[#E8AD62] text-[#211B17] font-bold text-sm flex items-center justify-center">
-              5
-            </span>
-            <h4 className="font-display font-bold text-base text-[#FFF7E9]">Review & Excel</h4>
-            <p className="text-xs text-[#B9AB97] font-study leading-relaxed">
-              Watch your readiness score rise and enter real interviews with calm confidence.
-            </p>
+            <div className="bg-[#FAF5EC] dark:bg-[#342C25] p-6 rounded-lg border border-[#49372B]/10 dark:border-[#E5D6BE]/10 space-y-3">
+              <span className="font-serif text-2xl font-bold text-[#AC7256]">04</span>
+              <h3 className="font-serif text-lg font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Build Confidence
+              </h3>
+              <p className="text-xs text-[#6B5D50] dark:text-[#B8AFA3] leading-relaxed">
+                Review your session history and track your progress over time with zero judgment.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-         TWO MODES SHOWCASE (Cozy Experience vs Advanced Mode)
+         TWO EXPERIENCES: COZY vs ADVANCED MODE
          ========================================================= */}
-      <section id="experience-modes" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto z-10 border-t border-[#E8AD62]/15">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[#E8AD62]">
-            Two Experiences, One Unified Product
+      <section id="two-modes" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-14 space-y-3">
+          <span className="text-xs uppercase font-semibold tracking-wider text-[#AC7256]">
+            One Product · Two Ways to Work
           </span>
-          <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#FFF7E9]">
-            Choose the mood that suits your focus.
+          <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+            Two experiences for different moments.
           </h2>
-          <p className="text-base text-[#EFE4D2]/80 font-study">
-            Switch effortlessly with a single tap. Your active interviews, resume drafts, and history stay intact.
+          <p className="text-[#6B5D50] dark:text-[#B8AFA3] text-base">
+            Switch anytime. Both modes share your account, interviews, resume drafts, and data.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Cozy Experience Card */}
           <div
             onClick={() => setExperience("cozy")}
-            className={`cursor-pointer p-8 rounded-3xl border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+            className={`p-8 rounded-lg cursor-pointer transition-all border ${
               isCozy
-                ? "bg-gradient-to-br from-[#2E231C] to-[#241B16] border-[#E8AD62] shadow-[0_0_50px_rgba(232,173,98,0.2)]"
-                : "bg-[#241B16]/70 border-[#E8AD62]/20 opacity-80 hover:opacity-100"
+                ? "bg-[#FAF5EC] dark:bg-[#2E2721] border-[#AC7256] shadow-md ring-1 ring-[#AC7256]"
+                : "bg-[#FAF5EC]/60 dark:bg-[#2A231C]/60 border-[#49372B]/10 hover:border-[#49372B]/30"
             }`}
           >
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-full bg-[#E8AD62]/20 text-[#F6CD8B] text-xs font-semibold flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  The Cozy Experience (Default)
+            <div className="flex items-center justify-between mb-4">
+              <span className="font-serif text-xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                The Cozy Experience (Default)
+              </span>
+              {isCozy && (
+                <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#AC7256]/15 text-[#AC7256]">
+                  Active
                 </span>
-                {isCozy && <CheckCircle2 className="w-5 h-5 text-[#E8AD62]" />}
-              </div>
-
-              <h3 className="font-display text-2xl font-bold text-[#FFF7E9]">
-                Warm Wood, Amber Light & Calm Focus
-              </h3>
-
-              <p className="text-sm text-[#EFE4D2]/80 font-study leading-relaxed">
-                Designed to feel like a private evening study with gentle rain outside, warm oak surfaces, parchment reading sheets, and reassuring pacing for deep preparation.
-              </p>
-
-              <div className="pt-4 space-y-2 text-xs text-[#B9AB97]">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E8AD62]" />
-                  <span>Cinzel & Lora editorial typography paired with clean UI</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E8AD62]" />
-                  <span>Optional Web Audio rain and hearth ambience</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E8AD62]" />
-                  <span>High-contrast parchment reading views for long reports</span>
-                </div>
-              </div>
+              )}
             </div>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setExperience("cozy");
-              }}
-              className="mt-8 w-full py-3 rounded-xl font-semibold text-xs tracking-wider uppercase bg-[#E8AD62] text-[#211B17] hover:bg-[#F6CD8B] transition-colors"
-            >
-              {isCozy ? "Active Experience" : "Switch to Cozy"}
-            </button>
+            <p className="text-sm text-[#6B5D50] dark:text-[#B8AFA3] leading-relaxed mb-6">
+              A quiet, comfortable study desk. Designed for deep concentration, low anxiety, and natural readability. Perfect when preparing for interviews and writing resumes.
+            </p>
+            <ul className="space-y-2 text-xs text-[#49372B] dark:text-[#E5D6BE]">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#AC7256]" />
+                <span>Tactile paper reading surfaces and Fraunces typography</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#AC7256]" />
+                <span>Restrained, distraction-free answer workspace</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#AC7256]" />
+                <span>Optional soft rain ambience</span>
+              </li>
+            </ul>
           </div>
 
           {/* Advanced Mode Card */}
           <div
             onClick={() => setExperience("advanced")}
-            className={`cursor-pointer p-8 rounded-3xl border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+            className={`p-8 rounded-lg cursor-pointer transition-all border ${
               !isCozy
-                ? "bg-gradient-to-br from-[#121824] to-[#0E131C] border-[#10B981] shadow-[0_0_50px_rgba(16,185,129,0.2)]"
-                : "bg-[#0F141F]/80 border-white/10 opacity-80 hover:opacity-100"
+                ? "bg-[#282C30] border-[#7A8065] shadow-md ring-1 ring-[#7A8065] text-[#ECEEF0]"
+                : "bg-[#F0E9DC]/70 dark:bg-[#2A231C]/60 border-[#49372B]/10 hover:border-[#49372B]/30"
             }`}
           >
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="px-3 py-1 rounded-full bg-[#10B981]/20 text-[#34D399] text-xs font-semibold flex items-center gap-1.5">
-                  <Terminal className="w-3.5 h-3.5" />
-                  Advanced Mode
+            <div className="flex items-center justify-between mb-4">
+              <span className="font-serif text-xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Advanced Mode
+              </span>
+              {!isCozy && (
+                <span className="text-[11px] font-medium px-2 py-0.5 rounded bg-[#7A8065]/20 text-[#ADB09A]">
+                  Active
                 </span>
-                {!isCozy && <CheckCircle2 className="w-5 h-5 text-[#10B981]" />}
-              </div>
-
-              <h3 className="font-display text-2xl font-bold text-[#FFFFFF]">
-                High-Density Telemetry & Professional Analytics
-              </h3>
-
-              <p className="text-sm text-[#D1D5DB] font-sans-ui leading-relaxed">
-                The modernized HireSense AI engine. Refined charcoal surfaces, restrained emerald highlights, dense candidate tables, live transcript feeds, and recruiter telemetry.
-              </p>
-
-              <div className="pt-4 space-y-2 text-xs text-[#9CA3AF]">
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
-                  <span>Compact data tables with extensive chart breakdowns</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
-                  <span>Real-time candidate intelligence and hiring probability</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
-                  <span>Cyber-gold and emerald telemetry alerts</span>
-                </div>
-              </div>
+              )}
             </div>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setExperience("advanced");
-              }}
-              className="mt-8 w-full py-3 rounded-xl font-semibold text-xs tracking-wider uppercase bg-[#10B981] text-[#07090E] hover:bg-[#34D399] transition-colors"
-            >
-              {!isCozy ? "Active Experience" : "Switch to Advanced"}
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* =========================================================
-         THE SORTED CLUB BRAND SECTION
-         ========================================================= */}
-      <section id="about-club" className="py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto z-10 text-center space-y-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#536B4F]/20 border border-[#536B4F]/30 text-xs text-[#80C8B5]">
-          <HeartHandshake className="w-3.5 h-3.5" />
-          <span>Parent Brand Endorsement</span>
-        </div>
-
-        <h2 className="font-display text-3xl sm:text-4xl font-bold text-[#FFF7E9]">
-          A Product of The Sorted Club
-        </h2>
-
-        <p className="text-base text-[#EFE4D2]/80 font-study max-w-2xl mx-auto leading-relaxed">
-          The Sorted Club builds human-centered technology that helps ambitious people get prepared, stay focused, and thrive in their careers without unnecessary anxiety or cold corporate jargon.
-        </p>
-
-        <div className="pt-2">
-          <button
-            onClick={() => setInstallModalOpen(true)}
-            className="px-6 py-2.5 rounded-xl border border-[#E8AD62]/30 bg-[#241B16] hover:bg-[#2E231C] text-xs font-medium text-[#E8AD62] inline-flex items-center gap-2 transition-all"
-          >
-            <span>Install Mobile / Desktop App</span>
-          </button>
-        </div>
-      </section>
-
-      {/* =========================================================
-         FINAL CTA
-         ========================================================= */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 z-10">
-        <div className="max-w-4xl mx-auto rounded-3xl p-8 sm:p-14 bg-gradient-to-br from-[#35251D] via-[#241B16] to-[#1A1512] border border-[#E8AD62]/35 text-center shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#E8AD62]/10 blur-3xl pointer-events-none" />
-
-          <div className="relative z-10 space-y-6">
-            <h2 className="font-display text-3xl sm:text-5xl font-bold text-[#FFF7E9]">
-              Make yourself comfortable. <br />
-              <span className="text-[#E8AD62]">Your next opportunity starts here.</span>
-            </h2>
-
-            <p className="text-sm sm:text-base text-[#EFE4D2]/80 font-study max-w-xl mx-auto">
-              Join thousands of job seekers preparing in the warmth of Hagrid's Hut.
+            <p className="text-sm text-[#6B5D50] dark:text-[#B8AFA3] leading-relaxed mb-6">
+              Modernized analytical mode. High data density, compact tables, candidate intelligence, speech pacing graphs, and deeper performance diagnostics.
             </p>
-
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button
-                onClick={handleEnterHut}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl font-semibold text-base bg-gradient-to-r from-[#E8AD62] to-[#D97706] text-[#211B17] hover:brightness-105 shadow-xl transition-all"
-              >
-                {user ? "Open Your Study Desk" : "Enter the Hut — Get Started Free"}
-              </button>
-
-              <button
-                onClick={() => setInstallModalOpen(true)}
-                className="w-full sm:w-auto px-6 py-4 rounded-2xl font-medium text-sm text-[#FFF7E9] bg-[#1A1512] border border-[#E8AD62]/20 hover:bg-[#241B16]"
-              >
-                Install App
-              </button>
-            </div>
+            <ul className="space-y-2 text-xs text-[#49372B] dark:text-[#E5D6BE]">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#7A8065]" />
+                <span>Deep charcoal surfaces and compact metrics</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#7A8065]" />
+                <span>Candidate intelligence and speech breakdown</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-[#7A8065]" />
+                <span>Shared accounts, sessions, and report records</span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-         FOOTER
+         ABOUT THE SORTED CLUB & FINAL INVITATION
          ========================================================= */}
-      <footer className="mt-auto border-t border-[#E8AD62]/15 bg-[#14100D] py-12 px-4 sm:px-6 lg:px-8 z-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <HagridsLogo to="/" />
+      <section id="about-club" className="py-20 bg-[#F0E9DC] dark:bg-[#2A231C] border-t border-[#49372B]/10 dark:border-[#E5D6BE]/10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6">
+          <span className="font-hand text-2xl text-[#AC7256]">A product of The Sorted Club</span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-[#302820] dark:text-[#FAF5EC]">
+            Your corner of the world to get career-ready.
+          </h2>
+          <p className="text-base text-[#6B5D50] dark:text-[#B8AFA3] max-w-xl mx-auto leading-relaxed">
+            The Sorted Club builds products that treat you like a capable adult who deserves calm tools. No countdowns, no neon scores, no synthetic pressure.
+          </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-[#B9AB97]">
-            <Link to="/practice" className="hover:text-[#FFF7E9]">Interview Practice</Link>
-            <Link to="/resume" className="hover:text-[#FFF7E9]">Resume Workshop</Link>
-            <Link to="/reports" className="hover:text-[#FFF7E9]">Reports</Link>
-            <Link to="/dashboard" className="hover:text-[#FFF7E9]">Study Desk</Link>
-            <button onClick={() => setInstallModalOpen(true)} className="hover:text-[#E8AD62]">
-              Install App
+          <div className="pt-4">
+            <button
+              onClick={handleEnterHut}
+              className="btn-primary text-base px-8 py-3.5"
+            >
+              Enter Hagrid's Hut
+              <ArrowRight className="w-4 h-4 ml-1" />
             </button>
           </div>
+        </div>
+      </section>
 
-          <p className="text-xs text-[#B9AB97]/70 text-center md:text-right">
-            © {new Date().getFullYear()} Hagrid's Hut. A product of The Sorted Club. All rights reserved.
+      {/* =========================================================
+         RESTRAINED FOOTER
+         ========================================================= */}
+      <footer className="py-12 bg-[#FAF5EC] dark:bg-[#221D19] border-t border-[#49372B]/10 dark:border-[#E5D6BE]/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <HagridsLogo variant="full" />
+
+          <p className="text-xs text-[#9B8D7F] text-center sm:text-right">
+            © {new Date().getFullYear()} Hagrid's Hut · A product of <span className="font-medium text-[#AC7256]">The Sorted Club</span>. All rights reserved.
           </p>
         </div>
       </footer>
-
-      {/* Install Modal */}
-      <InstallAppModal
-        isOpen={installModalOpen}
-        onClose={() => setInstallModalOpen(false)}
-      />
     </div>
   );
 }

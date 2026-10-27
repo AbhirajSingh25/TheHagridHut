@@ -1,29 +1,15 @@
 interface Props {
-
-children:string;
-
+  children: string;
+  className?: string;
 }
 
-
 export default function SectionTitle({
-children
-}:Props){
-
-return (
-
-<h2
-className="
-text-xl
-font-semibold
-text-white
-mb-5
-"
->
-
-{children}
-
-</h2>
-
-);
-
+  children,
+  className = "",
+}: Props) {
+  return (
+    <h2 className={`font-serif text-xl sm:text-2xl font-semibold text-[#302820] dark:text-[#FAF5EC] mb-4 text-left ${className}`}>
+      {children}
+    </h2>
+  );
 }

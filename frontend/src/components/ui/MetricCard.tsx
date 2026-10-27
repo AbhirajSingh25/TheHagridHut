@@ -1,237 +1,56 @@
-import {
-  ArrowUpRight,
-  TrendingUp,
-} from "lucide-react";
+import React from "react";
+import { ArrowUpRight, TrendingUp } from "lucide-react";
 
 interface MetricCardProps {
   title: string;
-  value: string;
+  value: string | number;
   description?: string;
   icon?: React.ElementType;
-  accent?: "purple" | "cyan" | "green" | "amber";
+  accent?: "terracotta" | "moss" | "brass" | "walnut" | "purple" | "cyan" | "green" | "amber";
 }
 
-function MetricCard({
+export default function MetricCard({
   title,
   value,
   description,
   icon: Icon,
-  accent = "purple",
+  accent = "terracotta",
 }: MetricCardProps) {
-
-  const accents = {
-    purple: {
-      icon:
-        "text-purple-400 bg-purple-500/10 border-purple-500/20",
-      glow:
-        "group-hover:bg-purple-500/10",
-      line:
-        "from-purple-500/0 via-purple-500/50 to-purple-500/0",
-      value:
-        "text-white",
-    },
-
-    cyan: {
-      icon:
-        "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
-      glow:
-        "group-hover:bg-cyan-500/10",
-      line:
-        "from-cyan-500/0 via-cyan-500/50 to-cyan-500/0",
-      value:
-        "text-white",
-    },
-
-    green: {
-      icon:
-        "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-      glow:
-        "group-hover:bg-emerald-500/10",
-      line:
-        "from-emerald-500/0 via-emerald-500/50 to-emerald-500/0",
-      value:
-        "text-white",
-    },
-
-    amber: {
-      icon:
-        "text-amber-400 bg-amber-500/10 border-amber-500/20",
-      glow:
-        "group-hover:bg-amber-500/10",
-      line:
-        "from-amber-500/0 via-amber-500/50 to-amber-500/0",
-      value:
-        "text-white",
-    },
+  // Map any legacy accent to our tactile palette
+  const accentStyles = {
+    terracotta: "text-[#AC7256] bg-[#AC7256]/10 border-[#AC7256]/20",
+    purple: "text-[#AC7256] bg-[#AC7256]/10 border-[#AC7256]/20",
+    moss: "text-[#7A8065] bg-[#7A8065]/10 border-[#7A8065]/20",
+    green: "text-[#7A8065] bg-[#7A8065]/10 border-[#7A8065]/20",
+    brass: "text-[#B39460] bg-[#B39460]/10 border-[#B39460]/20",
+    amber: "text-[#B39460] bg-[#B39460]/10 border-[#B39460]/20",
+    cyan: "text-[#7A8065] bg-[#7A8065]/10 border-[#7A8065]/20",
+    walnut: "text-[#49372B] dark:text-[#E5D6BE] bg-[#49372B]/10 border-[#49372B]/20",
   };
 
-  const theme = accents[accent];
-
+  const style = accentStyles[accent] || accentStyles.terracotta;
 
   return (
-    <div
-      className="
-        group
-        relative
-        overflow-hidden
-        rounded-2xl
-        border
-        border-white/[0.07]
-        bg-[#0b0b10]/80
-        p-5
-        transition-all
-        duration-300
-        hover:-translate-y-0.5
-        hover:border-white/[0.12]
-        hover:bg-[#0d0d13]
-      "
-    >
-
-      {/* ambient glow */}
-
-      <div
-        className={`
-          pointer-events-none
-          absolute
-          -right-10
-          -top-10
-          h-28
-          w-28
-          rounded-full
-          opacity-0
-          blur-3xl
-          transition
-          duration-500
-          ${theme.glow}
-        `}
-      />
-
-
-      {/* top row */}
-
-      <div
-        className="
-          relative
-          z-10
-          flex
-          items-start
-          justify-between
-        "
-      >
-
-        <div
-          className={`
-            flex
-            h-10
-            w-10
-            items-center
-            justify-center
-            rounded-xl
-            border
-            ${theme.icon}
-          `}
-        >
-
-          {Icon ? (
-            <Icon size={17} />
-          ) : (
-            <TrendingUp size={17} />
-          )}
-
+    <div className="study-card p-5 flex flex-col justify-between text-left">
+      <div className="flex items-start justify-between">
+        <div className={`flex h-9 w-9 items-center justify-center rounded-lg border ${style}`}>
+          {Icon ? <Icon size={16} /> : <TrendingUp size={16} />}
         </div>
-
-
-        <ArrowUpRight
-          size={15}
-          className="
-            text-emerald-400/70
-            transition
-            duration-300
-            group-hover:text-emerald-400
-          "
-        />
-
       </div>
 
-
-      {/* content */}
-
-      <div
-        className="
-          relative
-          z-10
-          mt-7
-        "
-      >
-
-        <p
-          className="
-            text-[11px]
-            font-medium
-            text-slate-500
-          "
-        >
+      <div className="mt-4 space-y-1">
+        <p className="text-xs font-medium text-[#6B5D50] dark:text-[#B8AFA3]">
           {title}
         </p>
-
-
-        <div
-          className="
-            mt-1
-            flex
-            items-baseline
-            gap-2
-          "
-        >
-
-          <h3
-            className={`
-              text-3xl
-              font-semibold
-              tracking-tight
-              ${theme.value}
-            `}
-          >
-            {value}
-          </h3>
-
-        </div>
-
-
+        <h3 className="font-serif text-2xl sm:text-3xl font-semibold tracking-tight text-[#302820] dark:text-[#FAF5EC]">
+          {value}
+        </h3>
         {description && (
-          <p
-            className="
-              mt-2
-              text-[10px]
-              text-slate-600
-            "
-          >
+          <p className="text-[11px] text-[#9B8D7F] leading-normal pt-1">
             {description}
           </p>
         )}
-
       </div>
-
-
-      {/* bottom accent */}
-
-      <div
-        className={`
-          pointer-events-none
-          absolute
-          bottom-0
-          left-0
-          h-px
-          w-full
-          bg-gradient-to-r
-          ${theme.line}
-          opacity-60
-        `}
-      />
-
     </div>
   );
 }
-
-
-export default MetricCard;

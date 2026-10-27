@@ -73,11 +73,11 @@ function Toggle({
         borderRadius: "999px",
         border: "1px solid",
         borderColor: enabled
-          ? "rgba(139, 92, 246, 0.7)"
-          : "rgba(148, 163, 184, 0.2)",
+          ? "#AC7256"
+          : "rgba(148, 163, 184, 0.25)",
         background: enabled
-          ? "linear-gradient(135deg, #7c3aed, #06b6d4)"
-          : "rgba(255, 255, 255, 0.05)",
+          ? "#AC7256"
+          : "rgba(73, 55, 43, 0.12)",
         padding: "3px",
         cursor: disabled ? "not-allowed" : "pointer",
         opacity: disabled ? 0.5 : 1,

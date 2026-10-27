@@ -3,185 +3,164 @@
 @tailwind utilities;
 
 /* =========================================================
-   HAGRID'S HUT DESIGN SYSTEM - BY THE SORTED CLUB
-   Two Distinct Experiences:
-   1. The Cozy Experience (Default)
-   2. Advanced Mode (Modernized HireSense AI)
+   HAGRID'S HUT DESIGN SYSTEM — THE RAINLIT STUDY
+   A product of The Sorted Club
    ========================================================= */
 
 :root {
-  color-scheme: dark;
-
-  /* Safe Area Insets for iPhones & Mobile notch/home indicator */
+  /* Safe Area Insets for iPhones & Mobile Notch */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
 
-  /* Font stacks */
-  --font-serif-display: "Cinzel", Georgia, serif;
-  --font-serif-body: "Lora", "Georgia", serif;
-  --font-sans: "Plus Jakarta Sans", "DM Sans", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* Typography Stacks */
+  --font-serif: "Fraunces", Georgia, serif;
+  --font-sans: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-hand: "Caveat", cursive, sans-serif;
 
   /* =========================================================
-     DEFAULT THEME: THE COZY EXPERIENCE (Hagrid's Hut)
-     Atmosphere: Warm wood, candlelight, parchment, moss, forest
+     PALETTE FOUNDATIONS
+     ========================================================= */
+  --color-old-linen: #F3EADD;
+  --color-worn-parchment: #E5D6BE;
+  --color-warm-cream: #FAF5EC;
+  --color-roasted-walnut: #49372B;
+  --color-warm-ink: #302820;
+  --color-soft-moss: #7A8065;
+  --color-muted-sage: #ADB09A;
+  --color-dried-terracotta: #AC7256;
+  --color-muted-brass: #B39460;
+  --color-rainy-evening: #333833;
+  --color-soft-charcoal: #282925;
+
+  /* =========================================================
+     COZY EXPERIENCE (Default)
+     Atmosphere: The Rainlit Study — natural paper, warm lamp,
+     roasted walnut surfaces, quiet, literary, tactile.
      ========================================================= */
   --experience: "cozy";
 
-  /* Core Palette */
-  --ink: #211B17;
-  --walnut: #35251D;
-  --coffee: #4B3024;
-  --forest: #243C31;
-  --moss: #536B4F;
-  --candlelight: #E8AD62;
-  --candlelight-soft: rgba(232, 173, 98, 0.15);
-  --parchment: #F1E4CC;
-  --cream: #FFF7E9;
-  --muted-hut: #B9AB97;
+  /* Surfaces & Backgrounds */
+  --bg: #F7F3EB;
+  --bg-subtle: #F0E9DC;
+  --bg-study: #2A231C;
+  --surface: #FAF5EC;
+  --surface-raised: #FFFFFF;
+  --surface-parchment: #F3EADD;
+  --surface-dark: #302820;
 
-  /* Semantic UI Tokens for Cozy Experience */
-  --bg: #1A1512;
-  --bg-soft: #241B16;
-  --bg-elevated: #2E231C;
-  --bg-elevated-glass: rgba(46, 35, 28, 0.94);
-  --bg-glass: rgba(26, 21, 18, 0.88);
-  --surface: #271E19;
-  --surface-soft: rgba(83, 107, 79, 0.12);
-  --surface-strong: rgba(53, 37, 29, 0.85);
+  /* Text & Inks */
+  --text: #302820;
+  --text-muted: #6B5D50;
+  --text-faint: #9B8D7F;
+  --text-inverse: #FAF5EC;
 
-  --overlay-soft: rgba(255, 247, 233, 0.04);
-  --overlay-med: rgba(255, 247, 233, 0.08);
+  /* Editorial Borders */
+  --border: rgba(73, 55, 43, 0.12);
+  --border-strong: rgba(73, 55, 43, 0.22);
+  --border-focus: #AC7256;
 
-  --border: rgba(232, 173, 98, 0.16);
-  --border-hover: rgba(232, 173, 98, 0.38);
+  /* Functional Accents */
+  --primary: #49372B;
+  --primary-hover: #372A21;
+  --primary-contrast: #FAF5EC;
+  
+  --accent-terracotta: #AC7256;
+  --accent-terracotta-soft: rgba(172, 114, 86, 0.12);
+  
+  --accent-moss: #7A8065;
+  --accent-moss-soft: rgba(122, 128, 101, 0.14);
+  
+  --accent-brass: #B39460;
+  --accent-brass-soft: rgba(179, 148, 96, 0.14);
 
-  --text: #FFF7E9;
-  --text-soft: #EFE4D2;
-  --muted: #B9AB97;
-  --text-faint: #877A6A;
+  --success: #657A57;
+  --warning: #B39460;
+  --danger: #AC5E50;
 
-  /* Brand Accents */
-  --primary: #E8AD62;
-  --primary-light: #F6CD8B;
-  --primary-soft: rgba(232, 173, 98, 0.16);
+  /* Natural Shadows (Soft, tactile, not glowing) */
+  --shadow-sm: 0 1px 3px rgba(48, 40, 32, 0.05);
+  --shadow-md: 0 4px 14px rgba(48, 40, 32, 0.07);
+  --shadow-lg: 0 12px 28px rgba(48, 40, 32, 0.09);
+  --shadow-inset-paper: inset 0 0 40px rgba(229, 214, 190, 0.35);
 
-  --secondary: #536B4F;
-  --secondary-light: #6E8A69;
-  --secondary-soft: rgba(83, 107, 79, 0.2);
-
-  --cyan: #80C8B5;
-  --cyan-soft: rgba(128, 200, 181, 0.15);
-
-  --success: #6E9B6A;
-  --warning: #E8AD62;
-  --danger: #D96B58;
-
-  --radius: 18px;
-  --radius-sm: 12px;
-  --radius-lg: 24px;
-
-  --shadow: 0 20px 60px rgba(15, 10, 8, 0.55);
-  --amber-glow: 0 0 45px rgba(232, 173, 98, 0.22);
-  --purple-glow: 0 0 40px rgba(232, 173, 98, 0.15);
-  --cyan-glow: 0 0 40px rgba(83, 107, 79, 0.2);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
 }
 
 /* =========================================================
-   EXPERIENCE B: ADVANCED MODE (Modernized HireSense AI)
-   Refined dark charcoal, restrained emerald, cyber gold, high data density
+   DARK THEME (Evening Study)
+   Warm ink & roasted walnut background with parchment papers
    ========================================================= */
+html[data-theme="dark"]:not([data-experience="advanced"]) {
+  --bg: #221D19;
+  --bg-subtle: #2B241F;
+  --surface: #2E2721;
+  --surface-raised: #383029;
+  --surface-parchment: #342C25;
+  --surface-dark: #1C1714;
 
+  --text: #F3EADD;
+  --text-muted: #B8AFA3;
+  --text-faint: #8A8176;
+  --text-inverse: #221D19;
+
+  --border: rgba(229, 214, 190, 0.12);
+  --border-strong: rgba(229, 214, 190, 0.22);
+  --border-focus: #B39460;
+
+  --primary: #AC7256;
+  --primary-hover: #BF8265;
+  --primary-contrast: #FAF5EC;
+
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.4);
+}
+
+/* =========================================================
+   ADVANCED MODE (Modernized HireSense AI)
+   Deep charcoal surfaces, restrained moss/emerald accents,
+   compact tables, denser layouts, zero neon glow.
+   ========================================================= */
 html[data-experience="advanced"] {
-  color-scheme: dark;
   --experience: "advanced";
 
-  --bg: #07090E;
-  --bg-soft: #0C1018;
-  --bg-elevated: #121824;
-  --bg-elevated-glass: rgba(18, 24, 36, 0.95);
-  --bg-glass: rgba(7, 9, 14, 0.85);
-  --surface: #101520;
-  --surface-soft: rgba(16, 185, 129, 0.06);
-  --surface-strong: rgba(22, 30, 46, 0.85);
+  --bg: #1C1E20;
+  --bg-subtle: #24272A;
+  --surface: #282C30;
+  --surface-raised: #31363B;
+  --surface-parchment: #282C30;
+  --surface-dark: #141618;
 
-  --overlay-soft: rgba(255, 255, 255, 0.035);
-  --overlay-med: rgba(255, 255, 255, 0.065);
+  --text: #ECEEF0;
+  --text-muted: #A3ABB3;
+  --text-faint: #727B83;
+  --text-inverse: #1C1E20;
 
-  --border: rgba(255, 255, 255, 0.09);
-  --border-hover: rgba(16, 185, 129, 0.35);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-focus: #7A8065;
 
-  --text: #F3F4F6;
-  --text-soft: #D1D5DB;
-  --muted: #9CA3AF;
-  --text-faint: #6B7280;
+  --primary: #7A8065;
+  --primary-hover: #8C9374;
+  --primary-contrast: #FFFFFF;
 
-  --primary: #10B981;
-  --primary-light: #34D399;
-  --primary-soft: rgba(16, 185, 129, 0.14);
+  --accent-terracotta: #B39460;
+  --accent-terracotta-soft: rgba(179, 148, 96, 0.12);
 
-  --secondary: #F59E0B;
-  --secondary-light: #FBBF24;
-  --secondary-soft: rgba(245, 158, 11, 0.12);
+  --accent-moss: #7A8065;
+  --accent-moss-soft: rgba(122, 128, 101, 0.15);
 
-  --cyan: #06B6D4;
-  --cyan-soft: rgba(6, 182, 212, 0.14);
-
-  --success: #10B981;
-  --warning: #F59E0B;
-  --danger: #EF4444;
-
-  --shadow: 0 20px 70px rgba(0, 0, 0, 0.65);
-  --amber-glow: 0 0 45px rgba(245, 158, 11, 0.18);
-  --purple-glow: 0 0 50px rgba(16, 185, 129, 0.15);
-  --cyan-glow: 0 0 50px rgba(6, 182, 212, 0.12);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 30px rgba(0, 0, 0, 0.45);
 }
 
 /* =========================================================
-   LIGHT THEME OVERRIDES (when user explicitly selects light)
-   ========================================================= */
-
-html[data-theme="light"] {
-  color-scheme: light;
-
-  --bg: #F8F5EE;
-  --bg-soft: #EFE9DC;
-  --bg-elevated: #FFFFFF;
-  --bg-elevated-glass: rgba(255, 255, 255, 0.94);
-  --bg-glass: rgba(248, 245, 238, 0.88);
-  --surface: #FFFFFF;
-  --surface-soft: rgba(43, 30, 24, 0.04);
-  --surface-strong: rgba(255, 255, 255, 0.94);
-
-  --overlay-soft: rgba(43, 30, 24, 0.035);
-  --overlay-med: rgba(43, 30, 24, 0.06);
-
-  --border: rgba(75, 48, 36, 0.15);
-  --border-hover: rgba(180, 83, 9, 0.45);
-
-  --text: #211B17;
-  --text-soft: #4B3024;
-  --muted: #796657;
-  --text-faint: #A69686;
-
-  --primary: #B45309;
-  --primary-light: #D97706;
-  --primary-soft: rgba(180, 83, 9, 0.12);
-
-  --secondary: #3B5438;
-  --secondary-light: #536B4F;
-  --secondary-soft: rgba(83, 107, 79, 0.14);
-
-  --cyan: #0E7490;
-  --cyan-soft: rgba(14, 116, 144, 0.1);
-
-  --shadow: 0 20px 60px rgba(75, 48, 36, 0.1);
-  --amber-glow: 0 0 35px rgba(217, 119, 6, 0.14);
-}
-
-/* =========================================================
-   BASE STYLES & RESET
+   BASE RESET & ACCESSIBILITY
    ========================================================= */
 
 * {
@@ -207,6 +186,8 @@ body {
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -215,22 +196,6 @@ body {
   padding-bottom: var(--safe-bottom);
   padding-left: var(--safe-left);
   padding-right: var(--safe-right);
-}
-
-/* Atmospheric Subtle Vignette for The Hut */
-html:not([data-experience="advanced"]) body {
-  background-image: 
-    radial-gradient(ellipse 90% 60% at 50% -10%, rgba(232, 173, 98, 0.08), transparent 70%),
-    radial-gradient(circle at 10% 30%, rgba(83, 107, 79, 0.05), transparent 45%),
-    radial-gradient(circle at 90% 80%, rgba(75, 48, 36, 0.1), transparent 50%);
-  background-attachment: fixed;
-}
-
-html[data-experience="advanced"] body {
-  background-image: 
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(16, 185, 129, 0.08), transparent 60%),
-    radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.05), transparent 40%);
-  background-attachment: fixed;
 }
 
 #root {
@@ -242,16 +207,31 @@ html[data-experience="advanced"] body {
 }
 
 /* =========================================================
-   TYPOGRAPHY HELPERS
+   EDITORIAL TYPOGRAPHY HELPERS
    ========================================================= */
 
+.font-editorial {
+  font-family: var(--font-serif);
+  font-feature-settings: "liga", "kern";
+  letter-spacing: -0.015em;
+}
+
+.font-ui {
+  font-family: var(--font-sans);
+}
+
+.font-handwriting {
+  font-family: var(--font-hand);
+}
+
+/* Backward compatibility classes mapped cleanly to new fonts */
 .font-display {
-  font-family: var(--font-serif-display);
-  letter-spacing: -0.01em;
+  font-family: var(--font-serif);
+  letter-spacing: -0.015em;
 }
 
 .font-study {
-  font-family: var(--font-serif-body);
+  font-family: var(--font-serif);
 }
 
 .font-sans-ui {
@@ -259,7 +239,104 @@ html[data-experience="advanced"] body {
 }
 
 /* =========================================================
-   SCROLLBAR
+   EDITORIAL SURFACES & CARDS
+   ========================================================= */
+
+/* The tactile study desk card — crisp, warm, clean */
+.study-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.study-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+/* The warm parchment document sheet (for resumes, reports, notes) */
+.parchment-sheet {
+  background-color: var(--color-warm-cream);
+  color: var(--color-warm-ink);
+  border: 1px solid var(--color-worn-parchment);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.parchment-sheet h1,
+.parchment-sheet h2,
+.parchment-sheet h3 {
+  font-family: var(--font-serif);
+  color: var(--color-roasted-walnut);
+}
+
+/* Minimal subtle card */
+.glass-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.18s ease;
+}
+
+/* Quiet study buttons (no glowing gradients, no neon rings) */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--primary);
+  color: var(--primary-contrast);
+  padding: 0.65rem 1.25rem;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.925rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: var(--text);
+  padding: 0.65rem 1.25rem;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 0.925rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-subtle);
+  border-color: var(--border-focus);
+}
+
+/* Marginal Handwritten Note */
+.marginal-note {
+  font-family: var(--font-hand);
+  color: var(--accent-terracotta);
+  font-size: 1.15rem;
+  line-height: 1.2;
+}
+
+/* =========================================================
+   SCROLLBAR & SELECTION
    ========================================================= */
 
 ::-webkit-scrollbar {
@@ -272,74 +349,17 @@ html[data-experience="advanced"] body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(232, 173, 98, 0.28);
+  background: var(--border-strong);
   border-radius: 999px;
 }
 
-html[data-experience="advanced"] ::-webkit-scrollbar-thumb {
-  background: rgba(16, 185, 129, 0.25);
-}
-
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(232, 173, 98, 0.48);
+  background: var(--color-muted-brass);
 }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(232, 173, 98, 0.25) var(--bg);
-}
-
-/* =========================================================
-   CUSTOM UI SURFACES
-   ========================================================= */
-
-.glass-card {
-  background: var(--bg-elevated-glass);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: var(--shadow);
-  border-radius: var(--radius);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.glass-card:hover {
-  border-color: var(--border-hover);
-}
-
-/* Parchment reading sheet for resumes, reports, and clear long text */
-.parchment-sheet {
-  background: #F4EAD7;
-  color: #211B17;
-  border: 1px solid #D8C7A5;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25), inset 0 0 80px rgba(216, 199, 165, 0.3);
-  border-radius: 12px;
-}
-
-.parchment-sheet h1,
-.parchment-sheet h2,
-.parchment-sheet h3 {
-  font-family: var(--font-serif-display);
-  color: #2E231C;
-}
-
-/* Study Warm Candlelight Glow */
-.candlelight-glow {
-  box-shadow: 0 0 35px rgba(232, 173, 98, 0.25);
-}
-
-.emerald-glow {
-  box-shadow: 0 0 35px rgba(16, 185, 129, 0.25);
-}
-
-/* Seamless Button Feedback */
-button {
-  cursor: pointer;
-  user-select: none;
-}
-
-button:active:not(:disabled) {
-  transform: scale(0.98);
+::selection {
+  background: var(--color-worn-parchment);
+  color: var(--color-warm-ink);
 }
 
 /* Accessible focus ring */
@@ -348,22 +368,11 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid var(--primary);
+  outline: 2px solid var(--border-focus);
   outline-offset: 2px;
 }
 
-/* Selection */
-::selection {
-  background: rgba(232, 173, 98, 0.35);
-  color: #FFF7E9;
-}
-
-html[data-experience="advanced"] ::selection {
-  background: rgba(16, 185, 129, 0.35);
-  color: #FFFFFF;
-}
-
-/* Touch targets helper */
+/* Touch target helper */
 .touch-target {
   min-height: 44px;
   min-width: 44px;
@@ -373,64 +382,15 @@ html[data-experience="advanced"] ::selection {
 }
 
 /* =========================================================
-   ANIMATIONS
+   MOTION ACCESSIBILITY
    ========================================================= */
-
-@keyframes amberPulse {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.85;
-    transform: scale(1.03);
-  }
-}
-
-.animate-amber-pulse {
-  animation: amberPulse 6s ease-in-out infinite;
-}
-
-@keyframes rainStreak {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(100vh);
-  }
-}
-
-/* =========================================================
-   MOBILE & SAFE AREA MEDIA QUERIES
-   ========================================================= */
-
-@media (max-width: 768px) {
-  :root {
-    --radius: 14px;
-    --radius-lg: 18px;
-  }
-
-  body {
-    font-size: 15px;
-  }
-}
-
-/* Standalone PWA adjustments */
-@media all and (display-mode: standalone) {
-  body {
-    user-select: none;
-    -webkit-user-select: none;
-  }
-}
-
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
   }
 }

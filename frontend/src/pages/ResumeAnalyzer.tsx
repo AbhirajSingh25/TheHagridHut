@@ -9,14 +9,13 @@ import {
   Target,
   Sparkles,
   Loader2,
+  BookOpen,
+  ArrowRight,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTheme } from "../context/ThemeContext";
 
-
-
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  "http://127.0.0.1:8000";
+const API_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 type ResumeResult = {
   ats_score?: number;
@@ -36,45 +35,21 @@ type JDResult = {
   keywords_to_add?: string[];
 };
 
-import { useTheme } from "../context/ThemeContext";
-
-function ResumeAnalyzer() {
+export default function ResumeAnalyzer() {
   const { experience } = useTheme();
   const [file, setFile] = useState<File | null>(null);
+  const [jobDescription, setJobDescription] = useState("");
+  const [jdResult, setJdResult] = useState<JDResult | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [jdLoading, setJdLoading] = useState(false);
+  const [result, setResult] = useState<ResumeResult | null>(null);
 
-  const [jobDescription, setJobDescription] =
-    useState("");
-
-  const [jdResult, setJdResult] =
-    useState<JDResult | null>(null);
-
-  const [loading, setLoading] =
-    useState(false);
-
-  const [jdLoading, setJdLoading] =
-    useState(false);
-
-  const [result, setResult] =
-    useState<ResumeResult | null>(null);
-
-  function saveCandidateScore(
-    key: string,
-    score: number,
-  ) {
-    const safeScore = Math.max(
-      0,
-      Math.min(100, Number(score) || 0),
-    );
-
-    localStorage.setItem(
-      key,
-      safeScore.toString(),
-    );
+  function saveCandidateScore(key: string, score: number) {
+    const safeScore = Math.max(0, Math.min(100, Number(score) || 0));
+    localStorage.setItem(key, safeScore.toString());
 
     const existingData = JSON.parse(
-      localStorage.getItem(
-        "hiresense_candidate_intelligence",
-      ) || "{}",
+      localStorage.getItem("hiresense_candidate_intelligence") || "{}"
     );
 
     const updatedData = {
@@ -85,178 +60,118 @@ function ResumeAnalyzer() {
 
     localStorage.setItem(
       "hiresense_candidate_intelligence",
-      JSON.stringify(updatedData),
+      JSON.stringify(updatedData)
     );
   }
 
   async function analyzeResume() {
     if (!file) {
-      toast.error("Please upload a resume");
+      toast.error("Please select a resume file first");
       return;
     }
 
     try {
       setLoading(true);
-
-      toast.loading(
-        "Analyzing resume...",
-        {
-          id: "resume",
-        },
-      );
+      toast.loading("Analyzing your resume...", { id: "resume" });
 
       const formData = new FormData();
-
       formData.append("file", file);
 
-      const response = await fetch(
-        `${API_URL}/api/resume/analyze`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
+      const response = await fetch(`${API_URL}/api/resume/analyze`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(
+          errorData?.detail ||
+            `Resume analysis failed with status ${response.status}`
+        );
+      }
 
-  const errorData =
-    await response.json()
-      .catch(
-        () => null
-      );
-
-  console.error(
-    "Resume API Error:",
-    response.status,
-    errorData
-  );
-
-  throw new Error(
-    errorData?.detail ||
-    `Resume analysis failed with status ${response.status}`
-  );
-}
-
-      const data =
-        (await response.json()) as ResumeResult;
-
+      const data = (await response.json()) as ResumeResult;
       setResult(data);
 
-      const atsScore =
-        Number(data.ats_score) || 0;
-
-      saveCandidateScore(
-        "ats_score",
-        atsScore,
-      );
+      const atsScore = Number(data.ats_score) || 0;
+      saveCandidateScore("ats_score", atsScore);
 
       toast.success(
-        `Resume analyzed. ATS score ${atsScore}% saved to Candidate Intelligence.`,
-        {
-          id: "resume",
-        },
+        `Resume analyzed. ATS score ${atsScore}% recorded.`,
+        { id: "resume" }
       );
     } catch (error: any) {
-
-  console.error(
-    "Resume Analysis Error:",
-    error
-  );
-
-  toast.error(
-    error?.message ||
-    "Resume analysis failed",
-    {
-      id: "resume",
-    }
-  );
-} finally {
+      console.error("Resume Analysis Error:", error);
+      toast.error(error?.message || "Resume analysis failed", { id: "resume" });
+    } finally {
       setLoading(false);
     }
   }
 
   async function matchJobDescription() {
     if (!result?.resume_text) {
-      toast.error(
-        "Analyze resume first",
-      );
+      toast.error("Analyze your resume before matching against a job description");
       return;
     }
 
     if (!jobDescription.trim()) {
-      toast.error(
-        "Paste a job description first",
-      );
+      toast.error("Please paste a job description first");
       return;
     }
 
     try {
       setJdLoading(true);
+      toast.loading("Comparing resume against job description...", {
+        id: "jd-match",
+      });
 
-      toast.loading(
-        "Matching resume with job description...",
-        {
-          id: "jd-match",
+      const response = await fetch(`${API_URL}/api/resume/match-jd`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
-
-      const response = await fetch(
-        `${API_URL}/api/resume/match-jd`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            resume_text:
-              result.resume_text,
-            job_description:
-              jobDescription,
-          }),
-        },
-      );
+        body: JSON.stringify({
+          resume_text: result.resume_text,
+          job_description: jobDescription,
+        }),
+      });
 
       if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
         throw new Error(
-          "JD Match failed",
+          errorData?.detail ||
+            `Job match failed with status ${response.status}`
         );
       }
 
-      const data =
-        (await response.json()) as JDResult;
-
+      const data = (await response.json()) as JDResult;
       setJdResult(data);
 
-      saveCandidateScore(
-        "jd_match_score",
-        Number(data.match_score) || 0,
-      );
+      const matchScore = Number(data.match_score) || 0;
+      saveCandidateScore("jd_match_score", matchScore);
 
-      toast.success(
-        "JD Match completed",
-        {
-          id: "jd-match",
-        },
-      );
-    } catch (error) {
-      console.error(error);
-
-      toast.error(
-        "JD Match failed",
-        {
-          id: "jd-match",
-        },
-      );
+      toast.success(`Match score: ${matchScore}%`, { id: "jd-match" });
+    } catch (error: any) {
+      console.error("JD Match Error:", error);
+      toast.error(error?.message || "Job description match failed", {
+        id: "jd-match",
+      });
     } finally {
       setJdLoading(false);
     }
   }
 
-  function handleFileChange(
-    selectedFile: File | null,
-  ) {
-    if (!selectedFile) {
+  function handleFileChange(selectedFile: File | null) {
+    if (!selectedFile) return;
+
+    const allowed = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    if (!allowed.includes(selectedFile.type) && !selectedFile.name.match(/\.(pdf|doc|docx)$/i)) {
+      toast.error("Please upload a PDF or Word document (.pdf, .doc, .docx)");
       return;
     }
 
@@ -265,757 +180,325 @@ function ResumeAnalyzer() {
     setJdResult(null);
   }
 
-  const atsScore =
-    Number(result?.ats_score) || 0;
-
-  const skillsCount =
-    result?.skills?.length || 0;
-
-  const missingSkillsCount =
-    result?.missing_skills?.length || 0;
-
-  const readiness =
-    Number(result?.readiness) || 0;
-
-  const jdScore =
-    Number(jdResult?.match_score) || 0;
+  const atsScore = Number(result?.ats_score) || 0;
+  const skillsCount = result?.skills?.length || 0;
+  const missingSkillsCount = result?.missing_skills?.length || 0;
+  const readiness = Number(result?.readiness) || 0;
+  const jdScore = Number(jdResult?.match_score) || 0;
 
   return (
-    <div className="w-full px-6 pb-16 sm:px-8 lg:px-10">
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-left font-sans">
+      {/* Editorial Header */}
+      <div className="space-y-2">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E5D6BE]/60 dark:bg-[#342C25] text-xs font-medium text-[#49372B] dark:text-[#E5D6BE] border border-[#49372B]/10 dark:border-[#E5D6BE]/10">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#AC7256]" />
+          <span>Hagrid's Hut · Resume Workshop</span>
+        </div>
 
-        {/* PAGE HEADER */}
-        <section className="mb-8 pt-2">
-          <div className="mb-2 flex items-center gap-2">
-            <span className={`h-2 w-2 rounded-full ${experience === "cozy" ? "bg-[#E8AD62] shadow-[0_0_10px_rgba(232,173,98,0.7)]" : "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.7)]"}`} />
+        <h1 className="font-serif text-3xl sm:text-4xl font-semibold tracking-tight text-[#302820] dark:text-[#FAF5EC]">
+          Resume Workshop
+        </h1>
 
-            <span className={`text-[10px] font-semibold uppercase tracking-[0.22em] ${experience === "cozy" ? "text-[#E8AD62]" : "text-emerald-400/80"}`}>
-              {experience === "cozy" ? "Hagrid's Hut Workshop" : "Resume Intelligence Telemetry"}
-            </span>
-          </div>
+        <p className="max-w-2xl text-sm leading-relaxed text-[#6B5D50] dark:text-[#B8AFA3]">
+          A quiet document workspace to review your resume. Upload your file to inspect structure, extract technical and professional skills, and align keywords with target roles.
+        </p>
+      </div>
 
-          <h1 className={`text-3xl sm:text-4xl font-bold tracking-tight text-white ${experience === "cozy" ? "font-display text-[#FFF7E9]" : ""}`}>
-            {experience === "cozy" ? "AI Resume Workshop" : "Resume Analyzer & ATS Engine"}
-          </h1>
-
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400 font-study">
-            {experience === "cozy"
-              ? "Polish and score your resume in your study. Receive genuine ATS keyword scoring, structural critique, and tailored job description alignment."
-              : "Analyze your resume for ATS compatibility, keyword density, recruiter readiness, and target job description fit."}
-          </p>
-        </section>
-
-        {/* UPLOAD */}
-        <section className="mb-6 rounded-2xl border border-white/[0.07] bg-[#090a10]/80 p-5 backdrop-blur-xl sm:p-6">
-
-          <div className="mb-5 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-400/15 bg-cyan-400/10">
-              <FileText
-                size={17}
-                className="text-cyan-300"
-              />
+      {/* Upload Sheet */}
+      <section className="study-card p-6 sm:p-8 space-y-5">
+        <div className="flex items-center justify-between border-b border-[#49372B]/10 dark:border-[#E5D6BE]/10 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-md bg-[#AC7256]/10 text-[#AC7256] flex items-center justify-center">
+              <FileText className="w-5 h-5" />
             </div>
-
             <div>
-              <h2 className="text-sm font-semibold text-white">
-                Upload your resume
+              <h2 className="font-serif text-lg font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Your Resume Document
               </h2>
-
-              <p className="mt-0.5 text-xs text-slate-500">
-                PDF, DOC, or DOCX
+              <p className="text-xs text-[#6B5D50] dark:text-[#B8AFA3]">
+                Supports PDF, DOC, and DOCX (up to 10MB)
               </p>
             </div>
           </div>
+        </div>
 
-          <label
-            htmlFor="resume-upload"
-            className="
-              group
-              flex
-              cursor-pointer
-              flex-col
-              items-center
-              justify-center
-              rounded-xl
-              border
-              border-dashed
-              border-white/[0.09]
-              bg-white/[0.015]
-              px-5
-              py-10
-              text-center
-              transition
-              hover:border-cyan-400/30
-              hover:bg-cyan-400/[0.025]
-            "
+        <label
+          htmlFor="resume-upload"
+          className="group flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[#49372B]/20 dark:border-[#E5D6BE]/20 bg-[#FAF5EC] dark:bg-[#342C25] px-6 py-10 text-center cursor-pointer hover:border-[#AC7256] transition-colors"
+        >
+          <div className="w-12 h-12 rounded-full bg-[#E5D6BE]/60 dark:bg-[#383029] text-[#49372B] dark:text-[#E5D6BE] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+            <Upload className="w-5 h-5 text-[#AC7256]" />
+          </div>
+
+          <p className="text-sm font-semibold text-[#302820] dark:text-[#FAF5EC]">
+            {file ? file.name : "Choose a resume to review"}
+          </p>
+
+          <p className="text-xs text-[#6B5D50] dark:text-[#B8AFA3] mt-1">
+            {file
+              ? "Click to choose a different document"
+              : "Drag and drop or browse from your computer"}
+          </p>
+
+          <input
+            id="resume-upload"
+            type="file"
+            accept=".pdf,.doc,.docx"
+            className="hidden"
+            onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+          />
+        </label>
+
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+          {file ? (
+            <div className="flex items-center gap-2 text-xs font-medium text-[#657A57]">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Document ready for analysis</span>
+            </div>
+          ) : (
+            <span className="text-xs text-[#9B8D7F]">
+              Private & confidential: your resume is evaluated securely.
+            </span>
+          )}
+
+          <button
+            onClick={analyzeResume}
+            disabled={!file || loading}
+            className="btn-primary w-full sm:w-auto"
           >
-            <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-400/10">
-              <Upload
-                size={20}
-                className="text-cyan-300 transition-transform group-hover:-translate-y-0.5"
-              />
-            </div>
-
-            <p className="text-sm font-medium text-slate-200">
-              {file
-                ? file.name
-                : "Choose a resume"}
-            </p>
-
-            <p className="mt-1 text-xs text-slate-500">
-              {file
-                ? "Click to choose a different file"
-                : "Upload your latest resume for analysis"}
-            </p>
-
-            <input
-              id="resume-upload"
-              type="file"
-              accept=".pdf,.doc,.docx"
-              className="hidden"
-              onChange={(event) => {
-                handleFileChange(
-                  event.target.files?.[0] ||
-                    null,
-                );
-              }}
-            />
-          </label>
-
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-
-            {file ? (
-              <div className="flex items-center gap-2 text-xs text-emerald-400">
-                <CheckCircle2 size={14} />
-                Resume selected
-              </div>
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Analyzing document...</span>
+              </>
             ) : (
-              <p className="text-xs text-slate-600">
-                Maximum recommended file size: 10 MB
-              </p>
+              <>
+                <span>Analyze Resume</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
             )}
+          </button>
+        </div>
+      </section>
 
-            <button
-              onClick={analyzeResume}
-              disabled={!file || loading}
-              className="
-                inline-flex
-                items-center
-                justify-center
-                gap-2
-                rounded-xl
-                bg-gradient-to-r
-                from-violet-500
-                to-cyan-400
-                px-5
-                py-2.5
-                text-sm
-                font-semibold
-                text-white
-                shadow-[0_0_25px_rgba(139,92,246,0.15)]
-                transition
-                hover:-translate-y-0.5
-                disabled:cursor-not-allowed
-                disabled:opacity-40
-              "
-            >
-              {loading ? (
-                <>
-                  <Loader2
-                    size={15}
-                    className="animate-spin"
-                  />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <Sparkles size={15} />
-                  Analyze Resume
-                </>
-              )}
-            </button>
+      {/* Analysis Results Display */}
+      {result && (
+        <div className="space-y-8 animate-fadeIn">
+          {/* Key Metrics Overview */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="study-card p-5">
+              <span className="text-xs text-[#6B5D50] dark:text-[#B8AFA3]">ATS Match Score</span>
+              <div className="font-serif text-3xl font-bold text-[#302820] dark:text-[#FAF5EC] mt-1">
+                {atsScore}%
+              </div>
+              <span className="text-[11px] text-[#9B8D7F] mt-1 block">Heuristic keyword fit</span>
+            </div>
+
+            <div className="study-card p-5">
+              <span className="text-xs text-[#6B5D50] dark:text-[#B8AFA3]">Skills Detected</span>
+              <div className="font-serif text-3xl font-bold text-[#7A8065] mt-1">
+                {skillsCount}
+              </div>
+              <span className="text-[11px] text-[#9B8D7F] mt-1 block">Extracted from text</span>
+            </div>
+
+            <div className="study-card p-5">
+              <span className="text-xs text-[#6B5D50] dark:text-[#B8AFA3]">Potential Gaps</span>
+              <div className="font-serif text-3xl font-bold text-[#AC7256] mt-1">
+                {missingSkillsCount}
+              </div>
+              <span className="text-[11px] text-[#9B8D7F] mt-1 block">Recommended additions</span>
+            </div>
+
+            <div className="study-card p-5">
+              <span className="text-xs text-[#6B5D50] dark:text-[#B8AFA3]">Interview Readiness</span>
+              <div className="font-serif text-3xl font-bold text-[#B39460] mt-1">
+                {readiness}%
+              </div>
+              <span className="text-[11px] text-[#9B8D7F] mt-1 block">Overall preparation</span>
+            </div>
           </div>
-        </section>
 
-        {/* RESULTS */}
-        {result && (
-          <section className="space-y-6">
-
-            {/* OVERVIEW */}
-            <div>
-              <div className="mb-3 flex items-center justify-between">
-                <div>
-                  <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-violet-400">
-                    ANALYSIS
-                  </p>
-
-                  <h2 className="mt-1 text-lg font-semibold text-white">
-                    Resume intelligence
-                  </h2>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-
-                <Metric
-                  label="ATS Score"
-                  value={`${atsScore}%`}
-                  icon={Target}
-                  accent="cyan"
-                />
-
-                <Metric
-                  label="Skills Found"
-                  value={skillsCount}
-                  icon={CheckCircle2}
-                  accent="emerald"
-                />
-
-                <Metric
-                  label="Missing Skills"
-                  value={missingSkillsCount}
-                  icon={AlertTriangle}
-                  accent="amber"
-                />
-
-                <Metric
-                  label="Interview Readiness"
-                  value={`${readiness}%`}
-                  icon={Sparkles}
-                  accent="violet"
-                />
-
-              </div>
+          {/* Recruiter Verdict Card */}
+          {result.verdict && (
+            <div className="study-card p-6 bg-[#FAF5EC] dark:bg-[#2E2721] border-l-4 border-l-[#AC7256] space-y-2">
+              <span className="font-hand text-xl text-[#AC7256]">Recruiter Notes</span>
+              <p className="text-sm text-[#49372B] dark:text-[#E5D6BE] leading-relaxed">
+                {result.verdict}
+              </p>
             </div>
-
-            {/* RECRUITER SUMMARY */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-
-              <InfoCard
-                label="RECRUITER VERDICT"
-                value={
-                  result.verdict ||
-                  "Pending"
-                }
-                icon={BriefcaseBusiness}
-                accent="emerald"
-              />
-
-              <InfoCard
-                label="RECOMMENDED ROLES"
-                value={`${result.recommended_roles?.length || 0} roles`}
-                icon={Target}
-                accent="violet"
-              />
-
-              <InfoCard
-                label="ATS STATUS"
-                value={
-                  atsScore >= 80
-                    ? "Strong match"
-                    : atsScore >= 60
-                      ? "Needs improvement"
-                      : "Needs attention"
-                }
-                icon={FileText}
-                accent="cyan"
-              />
-
-            </div>
-
-            {/* SKILLS */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-
-              <TagSection
-                title="Skills Found"
-                items={result.skills || []}
-                variant="positive"
-              />
-
-              <TagSection
-                title="Missing Skills"
-                items={
-                  result.missing_skills ||
-                  []
-                }
-                variant="warning"
-              />
-
-            </div>
-
-            {/* STRENGTHS / WEAKNESSES */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-
-              <ListSection
-                title="Strengths"
-                items={result.strengths || []}
-                variant="positive"
-              />
-
-              <ListSection
-                title="Areas to Improve"
-                items={result.weaknesses || []}
-                variant="warning"
-              />
-
-            </div>
-
-            {/* RECOMMENDED ROLES */}
-            {result.recommended_roles &&
-              result.recommended_roles.length >
-                0 && (
-                <section className="rounded-2xl border border-white/[0.07] bg-[#090a10]/80 p-5 backdrop-blur-xl">
-
-                  <div className="mb-4 flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-400/10">
-                      <BriefcaseBusiness
-                        size={16}
-                        className="text-violet-300"
-                      />
-                    </div>
-
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.2em] text-violet-400">
-                        CAREER FIT
-                      </p>
-
-                      <h2 className="text-sm font-semibold text-white">
-                        Recommended roles
-                      </h2>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {result.recommended_roles.map(
-                      (role, index) => (
-                        <span
-                          key={`${role}-${index}`}
-                          className="rounded-lg border border-violet-400/15 bg-violet-400/[0.06] px-3 py-2 text-xs font-medium text-violet-200"
-                        >
-                          {role}
-                        </span>
-                      ),
-                    )}
-                  </div>
-
-                </section>
-              )}
-
-            {/* JD MATCHER */}
-            <section className="rounded-2xl border border-white/[0.07] bg-[#090a10]/80 p-5 backdrop-blur-xl sm:p-6">
-
-              <div className="mb-5 flex items-start justify-between gap-4">
-
-                <div>
-                  <p className="text-[10px] font-medium uppercase tracking-[0.22em] text-cyan-400">
-                    JOB MATCH
-                  </p>
-
-                  <h2 className="mt-1 text-lg font-semibold text-white">
-                    Match your resume to a job
-                  </h2>
-
-                  <p className="mt-1 text-xs leading-relaxed text-slate-500">
-                    Compare your analyzed resume against
-                    a specific job description.
-                  </p>
-                </div>
-
-                <div className="hidden h-9 w-9 items-center justify-center rounded-xl border border-cyan-400/15 bg-cyan-400/10 sm:flex">
-                  <Search
-                    size={16}
-                    className="text-cyan-300"
-                  />
-                </div>
-
-              </div>
-
-              <textarea
-                value={jobDescription}
-                onChange={(event) =>
-                  setJobDescription(
-                    event.target.value,
-                  )
-                }
-                placeholder="Paste the job description here..."
-                className="
-                  min-h-40
-                  w-full
-                  resize-y
-                  rounded-xl
-                  border
-                  border-white/[0.07]
-                  bg-black/20
-                  p-4
-                  text-sm
-                  leading-relaxed
-                  text-slate-200
-                  outline-none
-                  placeholder:text-slate-600
-                  transition
-                  focus:border-cyan-400/30
-                  focus:bg-black/30
-                "
-              />
-
-              <div className="mt-4 flex justify-end">
-                <button
-                  onClick={matchJobDescription}
-                  disabled={
-                    jdLoading ||
-                    !jobDescription.trim()
-                  }
-                  className="
-                    inline-flex
-                    items-center
-                    justify-center
-                    gap-2
-                    rounded-xl
-                    border
-                    border-cyan-400/20
-                    bg-cyan-400/10
-                    px-5
-                    py-2.5
-                    text-sm
-                    font-semibold
-                    text-cyan-200
-                    transition
-                    hover:border-cyan-400/30
-                    hover:bg-cyan-400/15
-                    disabled:cursor-not-allowed
-                    disabled:opacity-40
-                  "
-                >
-                  {jdLoading ? (
-                    <>
-                      <Loader2
-                        size={15}
-                        className="animate-spin"
-                      />
-                      Matching...
-                    </>
-                  ) : (
-                    <>
-                      <Search size={15} />
-                      Match Resume
-                    </>
-                  )}
-                </button>
-              </div>
-
-              {jdResult && (
-                <div className="mt-6 border-t border-white/[0.06] pt-6">
-
-                  <div className="mb-5 flex items-center justify-between">
-
-                    <div>
-                      <p className="text-[10px] uppercase tracking-[0.2em] text-cyan-400">
-                        MATCH RESULT
-                      </p>
-
-                      <h3 className="mt-1 text-sm font-semibold text-white">
-                        Job compatibility
-                      </h3>
-                    </div>
-
-                    <div className="text-right">
-                      <p className="text-2xl font-semibold text-cyan-300">
-                        {jdScore}%
-                      </p>
-
-                      <p className="text-[10px] text-slate-600">
-                        Match score
-                      </p>
-                    </div>
-
-                  </div>
-
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-
-                    <TagSection
-                      title="Missing Skills"
-                      items={
-                        jdResult.missing_skills ||
-                        []
-                      }
-                      variant="warning"
-                    />
-
-                    <TagSection
-                      title="Keywords to Add"
-                      items={
-                        jdResult.keywords_to_add ||
-                        []
-                      }
-                      variant="positive"
-                    />
-
-                  </div>
-
-                </div>
-              )}
-
-            </section>
-
-          </section>
-        )}
-
-        </div>
-      );
-}
-
-/* =========================================================
-   METRIC
-   ========================================================= */
-
-function Metric({
-  label,
-  value,
-  icon: Icon,
-  accent,
-}: {
-  label: string;
-  value: string | number;
-  icon: typeof Target;
-  accent:
-    | "cyan"
-    | "emerald"
-    | "amber"
-    | "violet";
-}) {
-  const styles = {
-    cyan: {
-      icon: "bg-cyan-400/10 text-cyan-300",
-      value: "text-cyan-200",
-    },
-    emerald: {
-      icon: "bg-emerald-400/10 text-emerald-300",
-      value: "text-emerald-200",
-    },
-    amber: {
-      icon: "bg-amber-400/10 text-amber-300",
-      value: "text-amber-200",
-    },
-    violet: {
-      icon: "bg-violet-400/10 text-violet-300",
-      value: "text-violet-200",
-    },
-  };
-
-  return (
-    <div className="rounded-2xl border border-white/[0.07] bg-[#090a10]/80 p-4 backdrop-blur-xl">
-      <div className="mb-4 flex items-center justify-between">
-        <div
-          className={`flex h-8 w-8 items-center justify-center rounded-lg ${styles[accent].icon}`}
-        >
-          <Icon size={15} />
-        </div>
-      </div>
-
-      <p className="text-[11px] text-slate-500">
-        {label}
-      </p>
-
-      <p
-        className={`mt-1 text-2xl font-semibold ${styles[accent].value}`}
-      >
-        {value}
-      </p>
-    </div>
-  );
-}
-
-/* =========================================================
-   INFO CARD
-   ========================================================= */
-
-function InfoCard({
-  label,
-  value,
-  icon: Icon,
-  accent,
-}: {
-  label: string;
-  value: string;
-  icon: typeof Target;
-  accent:
-    | "cyan"
-    | "emerald"
-    | "violet";
-}) {
-  const styles = {
-    cyan: {
-      icon: "bg-cyan-400/10 text-cyan-300",
-      label: "text-cyan-400",
-    },
-    emerald: {
-      icon: "bg-emerald-400/10 text-emerald-300",
-      label: "text-emerald-400",
-    },
-    violet: {
-      icon: "bg-violet-400/10 text-violet-300",
-      label: "text-violet-400",
-    },
-  };
-
-  return (
-    <div className="rounded-2xl border border-white/[0.07] bg-[#090a10]/80 p-5 backdrop-blur-xl">
-      <div className="mb-4 flex h-8 w-8 items-center justify-center rounded-lg">
-        <div
-          className={`flex h-8 w-8 items-center justify-center rounded-lg ${styles[accent].icon}`}
-        >
-          <Icon size={15} />
-        </div>
-      </div>
-
-      <p
-        className={`text-[10px] font-medium uppercase tracking-[0.18em] ${styles[accent].label}`}
-      >
-        {label}
-      </p>
-
-      <p className="mt-2 text-lg font-semibold text-white">
-        {value}
-      </p>
-    </div>
-  );
-}
-
-/* =========================================================
-   TAG SECTION
-   ========================================================= */
-
-function TagSection({
-  title,
-  items,
-  variant,
-}: {
-  title: string;
-  items: string[];
-  variant: "positive" | "warning";
-}) {
-  const styles =
-    variant === "positive"
-      ? {
-          border:
-            "border-emerald-400/10",
-          bg:
-            "bg-emerald-400/[0.04]",
-          text:
-            "text-emerald-300",
-        }
-      : {
-          border:
-            "border-amber-400/10",
-          bg:
-            "bg-amber-400/[0.04]",
-          text:
-            "text-amber-300",
-        };
-
-  return (
-    <section className="rounded-2xl border border-white/[0.07] bg-[#090a10]/80 p-5 backdrop-blur-xl">
-
-      <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-white">
-          {title}
-        </h3>
-
-        <span className="text-[10px] text-slate-600">
-          {items.length} found
-        </span>
-      </div>
-
-      {items.length > 0 ? (
-        <div className="flex flex-wrap gap-2">
-          {items.map(
-            (item, index) => (
-              <span
-                key={`${item}-${index}`}
-                className={`rounded-lg border px-2.5 py-1.5 text-[11px] ${styles.border} ${styles.bg} ${styles.text}`}
-              >
-                {item}
-              </span>
-            ),
           )}
-        </div>
-      ) : (
-        <p className="text-xs text-slate-600">
-          Nothing detected.
-        </p>
-      )}
 
-    </section>
-  );
-}
-
-/* =========================================================
-   LIST SECTION
-   ========================================================= */
-
-function ListSection({
-  title,
-  items,
-  variant,
-}: {
-  title: string;
-  items: string[];
-  variant: "positive" | "warning";
-}) {
-  const positive =
-    variant === "positive";
-
-  return (
-    <section className="rounded-2xl border border-white/[0.07] bg-[#090a10]/80 p-5 backdrop-blur-xl">
-
-      <h3 className="mb-4 text-sm font-semibold text-white">
-        {title}
-      </h3>
-
-      {items.length > 0 ? (
-        <div className="space-y-2">
-          {items.map(
-            (item, index) => (
-              <div
-                key={`${item}-${index}`}
-                className="
-                  flex
-                  items-start
-                  gap-3
-                  rounded-xl
-                  border
-                  border-white/[0.05]
-                  bg-white/[0.015]
-                  px-3
-                  py-2.5
-                "
-              >
-                {positive ? (
-                  <CheckCircle2
-                    size={15}
-                    className="mt-0.5 shrink-0 text-emerald-400"
-                  />
+          {/* Skills Breakdown */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="study-card p-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#7A8065]" />
+                <h3 className="font-serif text-lg font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                  Skills Found in Document
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {result.skills && result.skills.length > 0 ? (
+                  result.skills.map((skill, i) => (
+                    <span
+                      key={i}
+                      className="text-xs px-2.5 py-1 rounded-md bg-[#7A8065]/15 text-[#49372B] dark:text-[#E5D6BE] font-medium"
+                    >
+                      {skill}
+                    </span>
+                  ))
                 ) : (
-                  <AlertTriangle
-                    size={15}
-                    className="mt-0.5 shrink-0 text-amber-400"
-                  />
+                  <p className="text-xs text-[#9B8D7F]">No primary skills parsed</p>
                 )}
-
-                <p className="text-xs leading-relaxed text-slate-400">
-                  {item}
-                </p>
               </div>
-            ),
-          )}
-        </div>
-      ) : (
-        <p className="text-xs text-slate-600">
-          Nothing detected.
-        </p>
-      )}
+            </div>
 
-    </section>
+            <div className="study-card p-6 space-y-4">
+              <div className="flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-[#AC7256]" />
+                <h3 className="font-serif text-lg font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                  Suggested Keywords & Skills
+                </h3>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {result.missing_skills && result.missing_skills.length > 0 ? (
+                  result.missing_skills.map((skill, i) => (
+                    <span
+                      key={i}
+                      className="text-xs px-2.5 py-1 rounded-md bg-[#AC7256]/15 text-[#AC7256] font-medium"
+                    >
+                      + {skill}
+                    </span>
+                  ))
+                ) : (
+                  <p className="text-xs text-[#9B8D7F]">Document includes all standard target keywords</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Strengths & Areas to Polish */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="study-card p-6 space-y-3">
+              <h3 className="font-serif text-lg font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Document Strengths
+              </h3>
+              <ul className="space-y-2 text-xs text-[#6B5D50] dark:text-[#B8AFA3]">
+                {result.strengths && result.strengths.length > 0 ? (
+                  result.strengths.map((str, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-[#7A8065] font-bold">✓</span>
+                      <span>{str}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li>Clear professional presentation detected.</li>
+                )}
+              </ul>
+            </div>
+
+            <div className="study-card p-6 space-y-3">
+              <h3 className="font-serif text-lg font-semibold text-[#302820] dark:text-[#FAF5EC]">
+                Areas to Polish
+              </h3>
+              <ul className="space-y-2 text-xs text-[#6B5D50] dark:text-[#B8AFA3]">
+                {result.weaknesses && result.weaknesses.length > 0 ? (
+                  result.weaknesses.map((weak, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-[#AC7256] font-bold">→</span>
+                      <span>{weak}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li>No major gaps identified in the current draft.</li>
+                )}
+              </ul>
+            </div>
+          </div>
+
+          {/* Job Description Matcher Section */}
+          <section className="study-card p-6 sm:p-8 space-y-5">
+            <div>
+              <span className="font-hand text-xl text-[#AC7256]">Specific Role Alignment</span>
+              <h3 className="font-serif text-2xl font-semibold text-[#302820] dark:text-[#FAF5EC] mt-1">
+                Match Against a Target Job Description
+              </h3>
+              <p className="text-xs text-[#6B5D50] dark:text-[#B8AFA3] mt-1">
+                Paste the job listing text you are targeting to see how closely your resume aligns with its requirements.
+              </p>
+            </div>
+
+            <textarea
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              placeholder="Paste job description requirements and qualifications here..."
+              rows={5}
+              className="w-full p-4 rounded-md border border-[#49372B]/20 dark:border-[#E5D6BE]/20 bg-[#FAF5EC] dark:bg-[#342C25] text-sm text-[#302820] dark:text-[#FAF5EC] placeholder:text-[#9B8D7F] focus:border-[#AC7256] outline-none"
+            />
+
+            <div className="flex justify-end">
+              <button
+                onClick={matchJobDescription}
+                disabled={jdLoading || !jobDescription.trim()}
+                className="btn-primary"
+              >
+                {jdLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Comparing requirements...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Match with Job Description</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </div>
+
+            {/* JD Match Result */}
+            {jdResult && (
+              <div className="pt-6 border-t border-[#49372B]/10 dark:border-[#E5D6BE]/10 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs text-[#6B5D50] dark:text-[#B8AFA3]">Alignment Score</span>
+                    <div className="font-serif text-3xl font-bold text-[#AC7256] mt-0.5">
+                      {jdScore}%
+                    </div>
+                  </div>
+                  <span className="text-xs px-3 py-1 rounded bg-[#AC7256]/15 text-[#AC7256] font-medium">
+                    {jdScore >= 75 ? "High Alignment" : "Partial Alignment"}
+                  </span>
+                </div>
+
+                {jdResult.keywords_to_add && jdResult.keywords_to_add.length > 0 && (
+                  <div className="space-y-2">
+                    <span className="text-xs font-semibold text-[#49372B] dark:text-[#E5D6BE]">
+                      Keywords to integrate into your experience bullets:
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {jdResult.keywords_to_add.map((kw, i) => (
+                        <span
+                          key={i}
+                          className="text-xs px-2.5 py-1 rounded bg-[#B39460]/20 text-[#49372B] dark:text-[#E5D6BE]"
+                        >
+                          {kw}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </section>
+
+          {/* Honest Disclaimer */}
+          <div className="text-center text-[11px] text-[#9B8D7F] pt-4">
+            Evaluations reflect heuristic ATS keyword matching and career best practices. They provide guidance rather than a guarantee of interview invitations or employment outcomes.
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
-
-export default ResumeAnalyzer;
