@@ -174,20 +174,11 @@ function AuthPage({
 
     return (
 
-      <div
-        className="
-          flex
-          min-h-screen
-          items-center
-          justify-center
-          bg-[#060912]
-          text-sm
-          text-slate-400
-        "
-      >
-
-        Loading...
-
+      <div className="flex min-h-screen items-center justify-center bg-[#1E252B] text-sm text-[#C4D2D5] font-serif">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[#D6A879] animate-ping" />
+          <span>Entering Hagrid's Hut...</span>
+        </div>
       </div>
 
     );

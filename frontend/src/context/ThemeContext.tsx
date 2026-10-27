@@ -16,6 +16,7 @@ import {
 
 export type ThemeMode = "dark" | "light" | "system";
 export type ExperienceMode = "cozy" | "advanced";
+export type ArtworkMode = "rainy-study" | "overcast-afternoon";
 
 type ThemeContextType = {
   theme: ThemeMode;
@@ -23,6 +24,8 @@ type ThemeContextType = {
   setTheme: (theme: ThemeMode, persist?: boolean) => void;
   experience: ExperienceMode;
   setExperience: (exp: ExperienceMode, persist?: boolean) => void;
+  artworkMode: ArtworkMode;
+  setArtworkMode: (mode: ArtworkMode) => void;
   // Kept for any existing code still calling the old boolean API.
   darkMode: boolean;
   toggleTheme: () => void;
@@ -34,6 +37,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(
 
 const THEME_STORAGE_KEY = "hagrids-theme";
 const EXPERIENCE_STORAGE_KEY = "hagrids-experience-mode";
+const ARTWORK_STORAGE_KEY = "hagrids-artwork-mode";
 
 function getSystemPrefersDark() {
   if (typeof window === "undefined" || !window.matchMedia) {
@@ -49,9 +53,14 @@ function resolve(theme: ThemeMode): "dark" | "light" {
   return theme;
 }
 
-function applyToDocument(resolved: "dark" | "light", experience: ExperienceMode) {
+function applyToDocument(
+  resolved: "dark" | "light",
+  experience: ExperienceMode,
+  artwork: ArtworkMode
+) {
   document.documentElement.setAttribute("data-theme", resolved);
   document.documentElement.setAttribute("data-experience", experience);
+  document.documentElement.setAttribute("data-artwork", artwork);
   document.documentElement.style.colorScheme = resolved;
 }
 
@@ -73,6 +82,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return "cozy";
   });
 
+  const [artworkMode, setArtworkModeState] = useState<ArtworkMode>(() => {
+    const stored = localStorage.getItem(ARTWORK_STORAGE_KEY);
+    if (stored === "rainy-study" || stored === "overcast-afternoon") {
+      return stored;
+    }
+    return "rainy-study";
+  });
+
   const [resolvedTheme, setResolvedTheme] = useState<"dark" | "light">(
     () => resolve(theme)
   );
@@ -81,10 +98,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const resolved = resolve(theme);
     setResolvedTheme(resolved);
-    applyToDocument(resolved, experience);
+    applyToDocument(resolved, experience, artworkMode);
     localStorage.setItem(THEME_STORAGE_KEY, theme);
     localStorage.setItem(EXPERIENCE_STORAGE_KEY, experience);
-  }, [theme, experience]);
+    localStorage.setItem(ARTWORK_STORAGE_KEY, artworkMode);
+  }, [theme, experience, artworkMode]);
 
   // Follow OS theme changes live when in "system" mode
   useEffect(() => {
@@ -97,12 +115,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const handleChange = () => {
       const resolved = resolve("system");
       setResolvedTheme(resolved);
-      applyToDocument(resolved, experience);
+      applyToDocument(resolved, experience, artworkMode);
     };
 
     media.addEventListener("change", handleChange);
     return () => media.removeEventListener("change", handleChange);
-  }, [theme, experience]);
+  }, [theme, experience, artworkMode]);
 
   // Sync with user's backend profile settings if signed in
   useEffect(() => {
@@ -147,6 +165,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const setArtworkMode = (mode: ArtworkMode) => {
+    setArtworkModeState(mode);
+    localStorage.setItem(ARTWORK_STORAGE_KEY, mode);
+  };
+
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
@@ -159,6 +182,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         setTheme,
         experience,
         setExperience,
+        artworkMode,
+        setArtworkMode,
         darkMode: resolvedTheme === "dark",
         toggleTheme,
       }}
